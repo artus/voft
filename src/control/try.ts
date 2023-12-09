@@ -8,9 +8,6 @@ export class Try<TryResult, TryError extends Error> {
     if (value && error) {
       throw new Error('Try cannot be constructed with both a value and an error.');
     }
-    if (!value && !error) {
-      throw new Error('Try must be constructed with either a value or an error.');
-    }
   }
 
   /**
@@ -18,7 +15,7 @@ export class Try<TryResult, TryError extends Error> {
    * 
    * @returns true if the Try is successful, false otherwise.
    */
-  isSuccess() {
+  isSuccess(): boolean {
     return this.isSuccessful;
   }
 
@@ -27,7 +24,7 @@ export class Try<TryResult, TryError extends Error> {
    * 
    * @returns true if the Try is a failure, false otherwise.
    */
-  isFailure() {
+  isFailure(): boolean {
     return !this.isSuccessful;
   }
 
@@ -37,7 +34,7 @@ export class Try<TryResult, TryError extends Error> {
    * @param executor A function that takes the Try's value and returns a new value.
    * @returns A new Try with the mapped value, a new Try with the error if one occured in the executor, or the original Try if it is a failure.
    */
-  map<NextTryResult>(executor: (result: TryResult) => NextTryResult) {
+  map<NextTryResult>(executor: (result: TryResult) => NextTryResult): Try<NextTryResult, TryError> {
     if (this.isSuccess()) {
       return Try.of<NextTryResult, TryError>(() => executor(this.value!));
     } else {
@@ -50,7 +47,7 @@ export class Try<TryResult, TryError extends Error> {
    * 
    * @returns The value embedded in the Try.
    */
-  get() {
+  get(): TryResult {
     if (this.isSuccess()) {
       return this.value!;
     } else {
@@ -64,7 +61,7 @@ export class Try<TryResult, TryError extends Error> {
    * @param executor A function that takes the Try's error and returns a value.
    * @returns The value embedded in the Try, or the result of the executor.
    */
-  getOrElse<NextTryResult>(executor: (error: TryError) => NextTryResult) {
+  getOrElse<NextTryResult>(executor: (error: TryError) => NextTryResult): TryResult | NextTryResult {
     if (this.isSuccess()) {
       return this.value!;
     } else {
@@ -78,7 +75,7 @@ export class Try<TryResult, TryError extends Error> {
    * @param failureMapper A function that takes the Try's error and returns an error.
    * @returns The value embedded in the Try, or the result of the executor.
    */
-  getOrElseThrow(failureMapper = (error: TryError) => { throw error }) {
+  getOrElseThrow(failureMapper = (error: TryError) => error): TryResult {
     if (this.isSuccess()) {
       return this.value!;
     } else {
@@ -91,7 +88,7 @@ export class Try<TryResult, TryError extends Error> {
    * 
    * @returns The error embedded in the Try.
    */
-  getCause() {  
+  getCause(): TryError {
     if (this.isSuccess()) {
       throw new Error('Cannot get cause of a successful Try.');
     } else {
@@ -105,7 +102,7 @@ export class Try<TryResult, TryError extends Error> {
    * @param executor A function that takes the Try's value and returns nothing.
    * @returns The original Try.
    */
-  andThen(executor: (result: TryResult) => unknown) {
+  andThen(executor: (result: TryResult) => unknown): Try<TryResult, TryError> {
     if (this.isSuccess()) {
       try {
         executor(this.value!);
@@ -122,14 +119,14 @@ export class Try<TryResult, TryError extends Error> {
    * @param executor A function that takes the Try's error and maps it to a new error.
    * @returns The original Try if it is a success, or a new Try with the mapped error.
    */
-  mapFailure<NextTryError extends Error>(failureMapper: (error: TryError) => NextTryError) {
+  mapFailure<NextTryError extends Error>(failureMapper: (error: TryError) => NextTryError): Try<TryResult, NextTryError> {
     if (this.isSuccess()) {
-      return this;
+      return Try.success(this.value!);
     } else {
       try {
         return Try.failure(failureMapper(this.error!));
       } catch (error) {
-        return Try.failure(error as TryError);
+        return Try.failure(error as NextTryError);
       }
     }
   }
@@ -143,11 +140,11 @@ export class Try<TryResult, TryError extends Error> {
    */
   static of<TryResult, TryError extends Error>(
     executor: () => TryResult
-  ): Try < TryResult, TryError > {
+  ): Try<TryResult, TryError> {
     try {
       const result = executor();
       return Try.success(result);
-    } catch(error) {
+    } catch (error) {
       return new Try<TryResult, TryError>(false, undefined, (error as TryError));
     }
   }
@@ -158,7 +155,7 @@ export class Try<TryResult, TryError extends Error> {
    * @param value The value to embed in the Try.
    * @returns A new Try with the value.
    */
-  static success<TryResult>(value: TryResult) {
+  static success<TryResult>(value: TryResult): Try<TryResult, never> {
     return new Try<TryResult, never>(true, value);
   }
 
@@ -168,7 +165,7 @@ export class Try<TryResult, TryError extends Error> {
    * @param error The error to embed in the Try.
    * @returns A new Try with the error.
    */
-  static failure<TryError extends Error>(error: TryError) {
-    return new Try(false, undefined, error);
+  static failure<TryError extends Error>(error: TryError): Try<never, TryError> {
+    return new Try<never, TryError>(false, undefined, error);
   }
 }
