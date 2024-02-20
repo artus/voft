@@ -1,28 +1,27 @@
 export class Optional<Embedded> {
-
-  private constructor(
-    private readonly value?: Embedded
-  ) {
+  private constructor(private readonly value?: Embedded) {
     // Do nothing.
   }
 
-  isPresent() {
+  isPresent(): boolean {
     return !!this.value;
   }
 
-  isEmpty() {
+  isEmpty(): boolean {
     return !this.value;
   }
 
-  map<NextEmbedded>(executor: (embedded: Embedded) => NextEmbedded) {
+  map<NextEmbedded>(
+    executor: (embedded: Embedded) => NextEmbedded
+  ): Optional<NextEmbedded> {
     if (this.isPresent()) {
       return Optional.of(executor(this.value!));
     } else {
-      return Optional.empty();
+      return Optional.empty<NextEmbedded>();
     }
   }
 
-  get() {
+  get(): Embedded {
     if (this.isPresent()) {
       return this.value!;
     } else {
@@ -30,7 +29,9 @@ export class Optional<Embedded> {
     }
   }
 
-  getOrElse<NextEmbedded>(executor: () => NextEmbedded) {
+  getOrElse<NextEmbedded>(
+    executor: () => NextEmbedded
+  ): Embedded | NextEmbedded {
     if (this.isPresent()) {
       return this.value!;
     } else {
@@ -38,7 +39,11 @@ export class Optional<Embedded> {
     }
   }
 
-  getOrElseThrow(failureMapper = (error: Error) => { throw error }) {
+  getOrElseThrow(
+    failureMapper = (error: Error): never => {
+      throw error;
+    }
+  ): Embedded {
     if (this.isPresent()) {
       return this.value!;
     } else {
@@ -46,26 +51,28 @@ export class Optional<Embedded> {
     }
   }
 
-  filter(predicate: (embedded: Embedded) => Optional<Embedded>) {
+  filter(
+    predicate: (embedded: Embedded) => Optional<Embedded>
+  ): Optional<Embedded> {
     if (this.isPresent() && predicate(this.value!)) {
       return this;
     } else {
-      return Optional.empty();
+      return Optional.empty<Embedded>();
     }
   }
 
-  ifPresent(consumer: (embedded: Embedded) => void) {
+  ifPresent(consumer: (embedded: Embedded) => void): Optional<Embedded> {
     if (this.isPresent()) {
       consumer(this.value!);
     }
     return this;
   }
 
-  static empty() {
-    return new Optional();
+  static empty<Embedded>(): Optional<Embedded> {
+    return new Optional<Embedded>();
   }
 
-  static of<Embedded>(value: Embedded) {
+  static of<Embedded>(value: Embedded): Optional<Embedded> {
     return new Optional(value);
   }
 }

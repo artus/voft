@@ -1,41 +1,44 @@
 enum EitherSide {
   Left,
   Right,
-  None
+  None,
 }
 
 export class Either<Left, Right> {
-
   private constructor(
     private readonly activeSide: EitherSide = EitherSide.None,
     private readonly _left?: Left,
     private readonly _right?: Right
-  ){
+  ) {
     if (_left && _right) {
-      throw new Error('Either cannot be constructed with both a left and a right.');
+      throw new Error(
+        'Either cannot be constructed with both a left and a right.'
+      );
     }
     if (!_left && !_right) {
-      throw new Error('Either must be constructed with either a left or a right.');
+      throw new Error(
+        'Either must be constructed with either a left or a right.'
+      );
     }
   }
 
-  right() {
+  right(): ProjectedEither<Right, Left> {
     return new ProjectedEither(this._right, this._left);
   }
 
-  left() {
+  left(): ProjectedEither<Left, Right> {
     return new ProjectedEither(this._left, this._right);
   }
 
-  isLeft() {
+  isLeft(): boolean {
     return this.activeSide === EitherSide.Left;
   }
 
-  isRight() {
-    return this.activeSide=== EitherSide.Right;
+  isRight(): boolean {
+    return this.activeSide === EitherSide.Right;
   }
 
-  getLeft() {
+  getLeft(): Left {
     if (this.isLeft()) {
       return this._left!;
     } else {
@@ -43,7 +46,7 @@ export class Either<Left, Right> {
     }
   }
 
-  getRight() {
+  getRight(): Right {
     if (this.isRight()) {
       return this._right!;
     } else {
@@ -51,42 +54,61 @@ export class Either<Left, Right> {
     }
   }
 
-  swap() {
-    const activeSide = this.activeSide === EitherSide.None ? EitherSide.None : this.activeSide === EitherSide.Left ? EitherSide.Right : EitherSide.Left;
+  swap(): Either<Right, Left> {
+    const activeSide =
+      this.activeSide === EitherSide.None
+        ? EitherSide.None
+        : this.activeSide === EitherSide.Left
+        ? EitherSide.Right
+        : EitherSide.Left;
     return new Either(activeSide, this._right, this._left);
   }
 
-  static Left<Left, Right>(left: Left) {
-    return new Either<Left, Right>(EitherSide.Left, left) as Either<Left, never>;
+  static Left<Left, Right>(left: Left): Either<Left, Right> {
+    return new Either<Left, Right>(EitherSide.Left, left) as Either<
+      Left,
+      Right
+    >;
   }
 
-  static right<Right>(right: Right) {
-    return new Either(EitherSide.Right, undefined, right) as Either<never, Right>
+  static right<Left, Right>(right: Right): Either<Left, Right> {
+    return new Either(EitherSide.Right, undefined, right) as Either<
+      Left,
+      Right
+    >;
   }
 }
 
 class ProjectedEither<ActualValue, AlternativeValue> {
   constructor(
     private readonly actualValue?: ActualValue,
-    private readonly alternativeValue?: AlternativeValue,
+    private readonly alternativeValue?: AlternativeValue
   ) {}
 
-  map<NextActualValue>(executor: (value: ActualValue) => NextActualValue | Promise<NextActualValue>) {
+  map<NextActualValue>(
+    executor: (value: ActualValue) => NextActualValue
+  ):
+    | ProjectedEither<NextActualValue, AlternativeValue>
+    | ProjectedEither<ActualValue, AlternativeValue> {
     if (this.actualValue) {
-      return new ProjectedEither<NextActualValue | Promise<NextActualValue>, AlternativeValue>(executor(this.actualValue));
+      return new ProjectedEither<NextActualValue, AlternativeValue>(
+        executor(this.actualValue)
+      );
     }
     return this;
   }
 
-  get() {
+  get(): ActualValue {
     if (!this.actualValue) {
-      throw new Error("There is no value on this side of the Either.");
+      throw new Error('There is no value on this side of the Either.');
     }
 
     return this.actualValue;
   }
 
-  getOrElse<NextAlternativeValue>(executor: (value: AlternativeValue) =>  NextAlternativeValue | Promise<NextAlternativeValue>) {
+  getOrElse<NextAlternativeValue>(
+    executor: (value: AlternativeValue) => NextAlternativeValue
+  ): ActualValue | NextAlternativeValue {
     if (!this.actualValue) {
       return executor(this.alternativeValue!);
     }

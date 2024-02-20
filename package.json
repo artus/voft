@@ -16,6 +16,8 @@
     "test": "tsdx test",
     "test:coverage": "tsdx test --coverage",
     "lint": "tsdx lint",
+    "lint-write": "tsdx lint --write-file",
+    "lint-fix": "tsdx lint --fix",
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why"

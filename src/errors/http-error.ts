@@ -1,9 +1,7 @@
-import { HTTP_CODES } from "../constants/http-codes";
+import { HTTP_CODES } from '../constants/http-codes';
 const { CLIENT_ERROR, SERVER_ERROR } = HTTP_CODES;
 
 export class HttpError extends Error {
-
-
   private constructor(
     public readonly message: string,
     public readonly statusCode: number = 500
@@ -13,7 +11,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a bad request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a bad request.
    */
@@ -23,7 +21,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects an unauthorized request.
-   * @param message 
+   * @param message
    * @returns An error that reflects an unauthorized request.
    */
   static unauthorized(message = CLIENT_ERROR.UNAUTHORIZED.message) {
@@ -32,7 +30,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a payment required request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a payment required request.
    */
@@ -42,7 +40,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a forbidden request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a forbidden request.
    */
@@ -52,7 +50,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a not found request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a not found request.
    */
@@ -62,7 +60,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a method not allowed request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a method not allowed request.
    */
@@ -72,7 +70,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a not acceptable request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a not acceptable request.
    */
@@ -82,17 +80,19 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a proxy authentication required request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a proxy authentication required request.
    */
-  static proxyAuthenticationRequired(message = CLIENT_ERROR.PROXY_AUTHENTICATION_REQUIRED.message) {
+  static proxyAuthenticationRequired(
+    message = CLIENT_ERROR.PROXY_AUTHENTICATION_REQUIRED.message
+  ) {
     return this.from(message, CLIENT_ERROR.PROXY_AUTHENTICATION_REQUIRED.code);
   }
 
   /**
    * Returns an error that reflects a request timeout request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a request timeout request.
    */
@@ -102,7 +102,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a conflict request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a conflict request.
    */
@@ -112,7 +112,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a gone request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a gone request.
    */
@@ -122,7 +122,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a length required request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a length required request.
    */
@@ -132,17 +132,19 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a precondition failed request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a precondition failed request.
    */
-  static preconditionFailed(message = CLIENT_ERROR.PRECONDITION_FAILED.message) {
+  static preconditionFailed(
+    message = CLIENT_ERROR.PRECONDITION_FAILED.message
+  ) {
     return this.from(message, CLIENT_ERROR.PRECONDITION_FAILED.code);
   }
 
   /**
    * Returns an error that reflects a payload too large request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a payload too large request.
    */
@@ -152,7 +154,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a uri too long request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a uri too long request.
    */
@@ -162,27 +164,31 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects an unsupported media type request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects an unsupported media type request.
    */
-  static unsupportedMediaType(message = CLIENT_ERROR.UNSUPPORTED_MEDIA_TYPE.message) {
+  static unsupportedMediaType(
+    message = CLIENT_ERROR.UNSUPPORTED_MEDIA_TYPE.message
+  ) {
     return this.from(message, CLIENT_ERROR.UNSUPPORTED_MEDIA_TYPE.code);
   }
 
   /**
    * Returns an error that reflects a range not satisfiable request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a range not satisfiable request.
    */
-  static rangeNotSatisfiable(message = CLIENT_ERROR.RANGE_NOT_SATISFIABLE.message) {
+  static rangeNotSatisfiable(
+    message = CLIENT_ERROR.RANGE_NOT_SATISFIABLE.message
+  ) {
     return this.from(message, CLIENT_ERROR.RANGE_NOT_SATISFIABLE.code);
   }
 
   /**
    * Returns an error that reflects an expectation failed request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects an expectation failed request.
    */
@@ -192,7 +198,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects an I'm a teapot request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects an I'm a teapot request.
    */
@@ -202,27 +208,31 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a misdirected request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a misdirected request.
    */
-  static misdirectedRequest(message = CLIENT_ERROR.MISDIRECTED_REQUEST.message) {
+  static misdirectedRequest(
+    message = CLIENT_ERROR.MISDIRECTED_REQUEST.message
+  ) {
     return this.from(message, CLIENT_ERROR.MISDIRECTED_REQUEST.code);
   }
 
   /**
    * Returns an error that reflects an unprocessable entity request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects an unprocessable entity request.
    */
-  static unprocessableEntity(message = CLIENT_ERROR.UNPROCESSABLE_ENTITY.message) {
+  static unprocessableEntity(
+    message = CLIENT_ERROR.UNPROCESSABLE_ENTITY.message
+  ) {
     return this.from(message, CLIENT_ERROR.UNPROCESSABLE_ENTITY.code);
   }
 
   /**
    * Returns an error that reflects a locked request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a locked request.
    */
@@ -232,7 +242,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a failed dependency request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a failed dependency request.
    */
@@ -242,7 +252,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a too early request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a too early request.
    */
@@ -252,7 +262,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects an upgrade required request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects an upgrade required request.
    */
@@ -262,17 +272,19 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a precondition required request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a precondition required request.
    */
-  static preconditionRequired(message = CLIENT_ERROR.PRECONDITION_REQUIRED.message) {
+  static preconditionRequired(
+    message = CLIENT_ERROR.PRECONDITION_REQUIRED.message
+  ) {
     return this.from(message, CLIENT_ERROR.PRECONDITION_REQUIRED.code);
   }
 
   /**
    * Returns an error that reflects a too many requests request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a too many requests request.
    */
@@ -282,27 +294,34 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a request header fields too large request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a request header fields too large request.
    */
-  static requestHeaderFieldsTooLarge(message = CLIENT_ERROR.REQUEST_HEADER_FIELDS_TOO_LARGE.message) {
-    return this.from(message, CLIENT_ERROR.REQUEST_HEADER_FIELDS_TOO_LARGE.code);
+  static requestHeaderFieldsTooLarge(
+    message = CLIENT_ERROR.REQUEST_HEADER_FIELDS_TOO_LARGE.message
+  ) {
+    return this.from(
+      message,
+      CLIENT_ERROR.REQUEST_HEADER_FIELDS_TOO_LARGE.code
+    );
   }
 
   /**
    * Returns an error that reflects an unavailable for legal reasons request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects an unavailable for legal reasons request.
    */
-  static unavailableForLegalReasons(message = CLIENT_ERROR.UNAVAILABLE_FOR_LEGAL_REASONS.message) {
+  static unavailableForLegalReasons(
+    message = CLIENT_ERROR.UNAVAILABLE_FOR_LEGAL_REASONS.message
+  ) {
     return this.from(message, CLIENT_ERROR.UNAVAILABLE_FOR_LEGAL_REASONS.code);
   }
 
   /**
    * Returns an error that reflects an internal server error.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects an internal server error.
    */
@@ -312,7 +331,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a not implemented request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a not implemented request.
    */
@@ -322,7 +341,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a bad gateway request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a bad gateway request.
    */
@@ -332,17 +351,19 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a service unavailable request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a service unavailable request.
    */
-  static serviceUnavailable(message = SERVER_ERROR.SERVICE_UNAVAILABLE.message) {
+  static serviceUnavailable(
+    message = SERVER_ERROR.SERVICE_UNAVAILABLE.message
+  ) {
     return this.from(message, SERVER_ERROR.SERVICE_UNAVAILABLE.code);
   }
 
   /**
    * Returns an error that reflects a gateway timeout request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a gateway timeout request.
    */
@@ -352,37 +373,43 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a http version not supported request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a http version not supported request.
    */
-  static httpVersionNotSupported(message = SERVER_ERROR.HTTP_VERSION_NOT_SUPPORTED.message) {
+  static httpVersionNotSupported(
+    message = SERVER_ERROR.HTTP_VERSION_NOT_SUPPORTED.message
+  ) {
     return this.from(message, SERVER_ERROR.HTTP_VERSION_NOT_SUPPORTED.code);
   }
 
   /**
    * Returns an error that reflects a variant also negotiates request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a variant also negotiates request.
    */
-  static variantAlsoNegotiates(message = SERVER_ERROR.VARIANT_ALSO_NEGOTIATES.message) {
+  static variantAlsoNegotiates(
+    message = SERVER_ERROR.VARIANT_ALSO_NEGOTIATES.message
+  ) {
     return this.from(message, SERVER_ERROR.VARIANT_ALSO_NEGOTIATES.code);
   }
 
   /**
    * Returns an error that reflects an insufficient storage request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects an insufficient storage request.
    */
-  static insufficientStorage(message = SERVER_ERROR.INSUFFICIENT_STORAGE.message) {
+  static insufficientStorage(
+    message = SERVER_ERROR.INSUFFICIENT_STORAGE.message
+  ) {
     return this.from(message, SERVER_ERROR.INSUFFICIENT_STORAGE.code);
   }
 
   /**
    * Returns an error that reflects a loop detected request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a loop detected request.
    */
@@ -392,7 +419,7 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a not extended request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a not extended request.
    */
@@ -402,17 +429,22 @@ export class HttpError extends Error {
 
   /**
    * Returns an error that reflects a network authentication required request.
-   * 
+   *
    * @param message - The error message.
    * @returns An error that reflects a network authentication required request.
    */
-  static networkAuthenticationRequired(message = SERVER_ERROR.NETWORK_AUTHENTICATION_REQUIRED.message) {
-    return this.from(message, SERVER_ERROR.NETWORK_AUTHENTICATION_REQUIRED.code);
+  static networkAuthenticationRequired(
+    message = SERVER_ERROR.NETWORK_AUTHENTICATION_REQUIRED.message
+  ) {
+    return this.from(
+      message,
+      SERVER_ERROR.NETWORK_AUTHENTICATION_REQUIRED.code
+    );
   }
 
   /**
    * Creates a custom error from an error.
-   * 
+   *
    * @param error - The error.
    * @param statusCode - The status code.
    * @returns A custom error.
@@ -423,12 +455,12 @@ export class HttpError extends Error {
 
   /**
    * Creates an HTTP error from a message and a status code.
-   * 
+   *
    * @param message - The error message.
    * @param statusCode - The status code.
    * @returns An HTTP error.
    */
-  static from(message = "Something went wrong.", statusCode = 500) {
+  static from(message = 'Something went wrong.', statusCode = 500) {
     return new HttpError(message, statusCode);
   }
 
@@ -436,7 +468,10 @@ export class HttpError extends Error {
     if (error instanceof HttpError) {
       return error;
     } else if ((error as any).statusCode) {
-      return this.fromError(error, (error as unknown as HttpError).statusCode);
+      return this.fromError(
+        error,
+        ((error as unknown) as HttpError).statusCode
+      );
     }
     return this.fromError(error, 500);
   }

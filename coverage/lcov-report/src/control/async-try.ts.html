@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/constants/http-codes.ts</title>
+    <title>Code coverage report for src/control/async-try.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/constants</a> http-codes.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/control</a> async-try.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">89.7% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>61/68</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>20/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">88.13% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>52/59</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -154,188 +154,305 @@
 <a name='L89'></a><a href='#L89'>89</a>
 <a name='L90'></a><a href='#L90'>90</a>
 <a name='L91'></a><a href='#L91'>91</a>
-<a name='L92'></a><a href='#L92'>92</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">54x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export const <span class="cstat-no" title="statement not covered" >HTTP_CODES = {</span>
-  INFORMATION: {
-    CONTINUE: { code: 100, message: 'Continue' },
-    SWITCHING_PROTOCOLS: { code: 101, message: 'Switching Protocols' },
-    PROCESSING: { code: 102, message: 'Processing' },
-    EARLY_HINTS: { code: 103, message: 'Early Hints' },
-  },
-  SUCCESS: {
-    OK: { code: 200, message: 'OK' },
-    CREATED: { code: 201, message: 'Created' },
-    ACCEPTED: { code: 202, message: 'Accepted' },
-    NON_AUTHORITATIVE_INFORMATION: {
-      code: 203,
-      message: 'Non-Authoritative Information',
-    },
-    NO_CONTENT: { code: 204, message: 'No Content' },
-    RESET_CONTENT: { code: 205, message: 'Reset Content' },
-    PARTIAL_CONTENT: { code: 206, message: 'Partial Content' },
-    MULTI_STATUS: { code: 207, message: 'Multi-Status' },
-    ALREADY_REPORTED: { code: 208, message: 'Already Reported' },
-    IM_USED: { code: 226, message: 'IM Used' },
-  },
-  REDIRECTION: {
-    MULTIPLE_CHOICES: { code: 300, message: 'Multiple Choices' },
-    MOVED_PERMANENTLY: { code: 301, message: 'Moved Permanently' },
-    FOUND: { code: 302, message: 'Found' },
-    SEE_OTHER: { code: 303, message: 'See Other' },
-    NOT_MODIFIED: { code: 304, message: 'Not Modified' },
-    TEMPORARY_REDIRECT: { code: 307, message: 'Temporary Redirect' },
-    PERMANENT_REDIRECT: { code: 308, message: 'Permanent Redirect' },
-  },
-  CLIENT_ERROR: {
-    BAD_REQUEST: { code: 400, message: 'Bad Request' },
-    UNAUTHORIZED: { code: 401, message: 'Unauthorized' },
-    PAYMENT_REQUIRED: { code: 402, message: 'Payment Required' },
-    FORBIDDEN: { code: 403, message: 'Forbidden' },
-    NOT_FOUND: { code: 404, message: 'Not Found' },
-    METHOD_NOT_ALLOWED: { code: 405, message: 'Method Not Allowed' },
-    NOT_ACCEPTABLE: { code: 406, message: 'Not Acceptable' },
-    PROXY_AUTHENTICATION_REQUIRED: {
-      code: 407,
-      message: 'Proxy Authentication Required',
-    },
-    REQUEST_TIMEOUT: { code: 408, message: 'Request Timeout' },
-    CONFLICT: { code: 409, message: 'Conflict' },
-    GONE: { code: 410, message: 'Gone' },
-    LENGTH_REQUIRED: { code: 411, message: 'Length Required' },
-    PRECONDITION_FAILED: { code: 412, message: 'Precondition Failed' },
-    PAYLOAD_TOO_LARGE: { code: 413, message: 'Payload Too Large' },
-    URI_TOO_LONG: { code: 414, message: 'URI Too Long' },
-    UNSUPPORTED_MEDIA_TYPE: { code: 415, message: 'Unsupported Media Type' },
-    RANGE_NOT_SATISFIABLE: { code: 416, message: 'Range Not Satisfiable' },
-    EXPECTATION_FAILED: { code: 417, message: 'Expectation Failed' },
-    I_AM_A_TEAPOT: { code: 418, message: "I'm a teapot" },
-    MISDIRECTED_REQUEST: { code: 421, message: 'Misdirected Request' },
-    UNPROCESSABLE_ENTITY: { code: 422, message: 'Unprocessable Entity' },
-    LOCKED: { code: 423, message: 'Locked' },
-    FAILED_DEPENDENCY: { code: 424, message: 'Failed Dependency' },
-    TOO_EARLY: { code: 425, message: 'Too Early' },
-    UPGRADE_REQUIRED: { code: 426, message: 'Upgrade Required' },
-    PRECONDITION_REQUIRED: { code: 428, message: 'Precondition Required' },
-    TOO_MANY_REQUESTS: { code: 429, message: 'Too Many Requests' },
-    REQUEST_HEADER_FIELDS_TOO_LARGE: {
-      code: 431,
-      message: 'Request Header Fields Too Large',
-    },
-    UNAVAILABLE_FOR_LEGAL_REASONS: {
-      code: 451,
-      message: 'Unavailable For Legal Reasons',
-    },
-  },
-  SERVER_ERROR: {
-    INTERNAL_SERVER_ERROR: { code: 500, message: 'Internal Server Error' },
-    NOT_IMPLEMENTED: { code: 501, message: 'Not Implemented' },
-    BAD_GATEWAY: { code: 502, message: 'Bad Gateway' },
-    SERVICE_UNAVAILABLE: { code: 503, message: 'Service Unavailable' },
-    GATEWAY_TIMEOUT: { code: 504, message: 'Gateway Timeout' },
-    HTTP_VERSION_NOT_SUPPORTED: {
-      code: 505,
-      message: 'HTTP Version Not Supported',
-    },
-    VARIANT_ALSO_NEGOTIATES: { code: 506, message: 'Variant Also Negotiates' },
-    INSUFFICIENT_STORAGE: { code: 507, message: 'Insufficient Storage' },
-    LOOP_DETECTED: { code: 508, message: 'Loop Detected' },
-    NOT_EXTENDED: { code: 510, message: 'Not Extended' },
-    NETWORK_AUTHENTICATION_REQUIRED: {
-      code: 511,
-      message: 'Network Authentication Required',
-    },
-  },
-};
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">type Executor&lt;TryResult&gt; = () =&gt; Promise&lt;TryResult&gt;;
+type Transformer&lt;TryResult, NextTryResult&gt; = (
+  result: TryResult
+) =&gt; Promise&lt;NextTryResult&gt;;
+&nbsp;
+export class AsyncTry&lt;TryResult, TryError extends Error&gt; {
+  private result: TryResult | undefined;
+&nbsp;
+  private constructor(
+    private readonly value?: Promise&lt;TryResult&gt;,
+    private error?: TryError
+  ) {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (value &amp;&amp; error) {
+<span class="cstat-no" title="statement not covered" >      throw new Error(</span>
+        'Try cannot be constructed with both a value and an error.'
+      );
+    }
+  }
+&nbsp;
+  map&lt;NextTryResult&gt;(
+    transformer: Transformer&lt;TryResult, NextTryResult&gt;
+  ): AsyncTry&lt;NextTryResult, TryError&gt; {
+    if (this.value) {
+      const transformedResult = this.value.then(transformer);
+      return AsyncTry.of(() =&gt; transformedResult);
+    } else <span class="missing-if-branch" title="else path not taken" >E</span>{
+<span class="cstat-no" title="statement not covered" >      return new AsyncTry&lt;NextTryResult, TryError&gt;(undefined, this.error);</span>
+    }
+  }
+&nbsp;
+  async isSuccess(): Promise&lt;boolean&gt; {
+    if (this.error) {
+      return Promise.resolve(false);
+    }
+&nbsp;
+    if (this.value &amp;&amp; this.result) {
+      return Promise.resolve(true);
+    } else if (<span class="missing-if-branch" title="if path not taken" >I</span>this.value) {
+      try {
+        const result = await this.value;
+        this.result = result;
+        return this.isSuccess();
+      } catch (error) {
+        this.error = error as TryError;
+        return Promise.resolve(false);
+      }
+    } else {
+<span class="cstat-no" title="statement not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >      return Promise.resolve(false);</span></span>
+    }
+  }
+&nbsp;
+  async isFailure(): Promise&lt;boolean&gt; {
+    const isSuccess = await this.isSuccess();
+    return !isSuccess;
+  }
+&nbsp;
+  async get(): Promise&lt;TryResult&gt; {
+    if (await this.isSuccess()) {
+      return this.result!;
+    } else {
+      throw this.error;
+    }
+  }
+&nbsp;
+  async getOrElse(
+    alternativeProvider: (error: TryError) =&gt; Promise&lt;TryResult&gt;
+  ): Promise&lt;TryResult&gt; {
+    if (<span class="missing-if-branch" title="if path not taken" >I</span>this.value) {
+      try {
+        return await this.value;
+      } catch (error) {
+        return alternativeProvider(error as TryError);
+      }
+    } else <span class="cstat-no" title="statement not covered" >if (this.error) {</span>
+<span class="cstat-no" title="statement not covered" >      return alternativeProvider(this.error);</span>
+    } else {
+<span class="cstat-no" title="statement not covered" >      throw new Error('Cannot get value of an empty AsyncTry');</span>
+    }
+  }
+&nbsp;
+  async getOrElseThrow(
+    failureMapper = (error: TryError): Error =&gt; error
+  ): Promise&lt;TryResult&gt; {
+    if (await this.isSuccess()) {
+      return this.result!;
+    } else {
+      throw failureMapper(this.error!);
+    }
+  }
+&nbsp;
+  async getCause(): Promise&lt;TryError&gt; {
+    if (await this.isSuccess()) {
+      throw new Error('Cannot get cause of a successful AsyncTry.');
+    } else {
+      return this.error!;
+    }
+  }
+&nbsp;
+  andThen(
+    transformer: Transformer&lt;TryResult, unknown&gt;
+  ): AsyncTry&lt;TryResult, TryError&gt; {
+    if (this.value) {
+      const containedValue = this.value;
+      const transformedResult = containedValue
+        .then(transformer)
+        .then(() =&gt; containedValue);
+      return new AsyncTry(transformedResult);
+    } else <span class="missing-if-branch" title="else path not taken" >E</span>{
+<span class="cstat-no" title="statement not covered" >      return new AsyncTry&lt;TryResult, TryError&gt;(undefined, this.error);</span>
+    }
+  }
+&nbsp;
+  static failure&lt;TryResult, TryError extends Error&gt;(
+    error: TryError
+  ): AsyncTry&lt;TryResult, TryError&gt; {
+    return new AsyncTry&lt;TryResult, TryError&gt;(undefined, error);
+  }
+&nbsp;
+  static success&lt;TryResult, TryError extends Error&gt;(
+    result: TryResult
+  ): AsyncTry&lt;TryResult, TryError&gt; {
+    return new AsyncTry&lt;TryResult, TryError&gt;(Promise.resolve(result));
+  }
+&nbsp;
+  static of&lt;TryResult, TryError extends Error&gt;(
+    executor: Executor&lt;TryResult&gt;
+  ): AsyncTry&lt;TryResult, TryError&gt; {
+    return new AsyncTry&lt;TryResult, TryError&gt;(executor());
+  }
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
