@@ -3,28 +3,22 @@ type Transformer<TryResult, NextTryResult> = (
   result: TryResult
 ) => Promise<NextTryResult>;
 
-export class AsyncTry<TryResult, TryError extends Error> {
-  private result: TryResult | undefined;
+export class AsyncTry<TryResult> {
+  private result?: TryResult;
 
   private constructor(
     private readonly value?: Promise<TryResult>,
-    private error?: TryError
-  ) {
-    if (value && error) {
-      throw new Error(
-        'Try cannot be constructed with both a value and an error.'
-      );
-    }
-  }
+    private error?: Error
+  ) {}
 
   map<NextTryResult>(
     transformer: Transformer<TryResult, NextTryResult>
-  ): AsyncTry<NextTryResult, TryError> {
-    if (this.value) {
-      const transformedResult = this.value.then(transformer);
-      return AsyncTry.of(() => transformedResult);
+  ): AsyncTry<NextTryResult> {
+    if (this.error) {
+      return AsyncTry.failure<NextTryResult>(this.error!);
     } else {
-      return new AsyncTry<NextTryResult, TryError>(undefined, this.error);
+      const transformedResult = this.value!.then(transformer);
+      return AsyncTry.of(() => transformedResult);
     }
   }
 
@@ -35,17 +29,15 @@ export class AsyncTry<TryResult, TryError extends Error> {
 
     if (this.value && this.result) {
       return Promise.resolve(true);
-    } else if (this.value) {
+    } else {
       try {
         const result = await this.value;
         this.result = result;
         return this.isSuccess();
       } catch (error) {
-        this.error = error as TryError;
+        this.error = error as Error;
         return Promise.resolve(false);
       }
-    } else {
-      return Promise.resolve(false);
     }
   }
 
@@ -63,23 +55,21 @@ export class AsyncTry<TryResult, TryError extends Error> {
   }
 
   async getOrElse(
-    alternativeProvider: (error: TryError) => Promise<TryResult>
+    alternativeProvider: (error: Error) => Promise<TryResult>
   ): Promise<TryResult> {
-    if (this.value) {
-      try {
-        return await this.value;
-      } catch (error) {
-        return alternativeProvider(error as TryError);
-      }
-    } else if (this.error) {
+    if (this.error) {
       return alternativeProvider(this.error);
     } else {
-      throw new Error('Cannot get value of an empty AsyncTry');
+      try {
+        return await this.get();
+      } catch (error) {
+        return alternativeProvider(error as Error);
+      }
     }
   }
 
   async getOrElseThrow(
-    failureMapper = (error: TryError): Error => error
+    failureMapper = (error: Error): Error => error
   ): Promise<TryResult> {
     if (await this.isSuccess()) {
       return this.result!;
@@ -88,7 +78,7 @@ export class AsyncTry<TryResult, TryError extends Error> {
     }
   }
 
-  async getCause(): Promise<TryError> {
+  async getCause(): Promise<Error> {
     if (await this.isSuccess()) {
       throw new Error('Cannot get cause of a successful AsyncTry.');
     } else {
@@ -96,35 +86,34 @@ export class AsyncTry<TryResult, TryError extends Error> {
     }
   }
 
-  andThen(
-    transformer: Transformer<TryResult, unknown>
-  ): AsyncTry<TryResult, TryError> {
-    if (this.value) {
-      const containedValue = this.value;
+  andThen(transformer: Transformer<TryResult, unknown>): AsyncTry<TryResult> {
+    if (this.result) {
+      const transformedResult = transformer(this.result).then(
+        () => this.result!
+      );
+      return new AsyncTry(transformedResult);
+    }
+
+    if (this.error) {
+      return this;
+    } else {
+      const containedValue = this.value!;
       const transformedResult = containedValue
         .then(transformer)
         .then(() => containedValue);
       return new AsyncTry(transformedResult);
-    } else {
-      return new AsyncTry<TryResult, TryError>(undefined, this.error);
     }
   }
 
-  static failure<TryResult, TryError extends Error>(
-    error: TryError
-  ): AsyncTry<TryResult, TryError> {
-    return new AsyncTry<TryResult, TryError>(undefined, error);
+  static failure<TryResult>(error: Error): AsyncTry<TryResult> {
+    return new AsyncTry<TryResult>(undefined, error);
   }
 
-  static success<TryResult, TryError extends Error>(
-    result: TryResult
-  ): AsyncTry<TryResult, TryError> {
-    return new AsyncTry<TryResult, TryError>(Promise.resolve(result));
+  static success<TryResult>(result: TryResult): AsyncTry<TryResult> {
+    return new AsyncTry<TryResult>(Promise.resolve(result));
   }
 
-  static of<TryResult, TryError extends Error>(
-    executor: Executor<TryResult>
-  ): AsyncTry<TryResult, TryError> {
-    return new AsyncTry<TryResult, TryError>(executor());
+  static of<TryResult>(executor: Executor<TryResult>): AsyncTry<TryResult> {
+    return new AsyncTry<TryResult>(executor());
   }
 }

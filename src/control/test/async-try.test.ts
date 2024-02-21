@@ -10,6 +10,14 @@ const successfulAsyncExecutor = async (): Promise<number> => {
   return 1;
 };
 
+const timeoutExecutor = (): Promise<number> => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(1);
+    }, 1000);
+  });
+};
+
 describe('AsyncTry', () => {
   it('Should only execute each executor or transformer once in a chain.', async () => {
     let executorCalls = 0;
@@ -80,6 +88,34 @@ describe('AsyncTry', () => {
     expect(result).toStrictEqual('Value: 3');
   });
 
+  it('Should be able to handle async operations that take time', async () => {
+    let transformerCalls = 0;
+    const numberTransformer = (value: number): Promise<number> => {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          transformerCalls++;
+          resolve(value + 1);
+        }, 1000);
+      });
+    };
+
+    const stringTransformer = async (value: number): Promise<string> => {
+      transformerCalls++;
+      return 'Value: ' + value;
+    };
+
+    const asyncTry = AsyncTry.of(timeoutExecutor)
+      .map(numberTransformer)
+      .map(numberTransformer)
+      .map(stringTransformer);
+
+    const result = await asyncTry.get();
+
+    expect(await asyncTry.isSuccess()).toStrictEqual(true);
+    expect(result).toStrictEqual('Value: 3');
+    expect(transformerCalls).toStrictEqual(3);
+  });
+
   describe('of', () => {
     it('Should return a successful AsyncTry when the provided Executor does not throw.', async () => {
       const result = AsyncTry.of(successfulAsyncExecutor);
@@ -109,6 +145,19 @@ describe('AsyncTry', () => {
       expect(await result.isFailure()).toStrictEqual(true);
       expect(executionCount).toStrictEqual(0);
     });
+
+    it('Should not throw an Error if the AsyncTry is a failure and we already know the result.', async () => {
+      const asyncTry = AsyncTry.of(throwingAsyncExecutor);
+      const isSuccess = await asyncTry.isSuccess();
+      const nextAsyncTry = asyncTry.map(async value => value + 1);
+      const nextIsSuccess = await nextAsyncTry.isSuccess();
+
+      expect(isSuccess).toStrictEqual(false);
+      expect(nextIsSuccess).toStrictEqual(false);
+
+      await expect(asyncTry.get()).rejects.toThrowError(testError);
+      await expect(nextAsyncTry.get()).rejects.toThrowError(testError);
+    });
   });
 
   describe('isSuccess', () => {
@@ -120,6 +169,44 @@ describe('AsyncTry', () => {
     it('Should return false when the AsyncTry is a failure.', async () => {
       const result = AsyncTry.of(throwingAsyncExecutor);
       expect(await result.isSuccess()).toStrictEqual(false);
+    });
+
+    it('Should not cause the embedded executors or transformers to be called more than required.', async () => {
+      let executorCalls = 0;
+      let transformerCalls = 0;
+
+      const executor = async (): Promise<number> => {
+        executorCalls++;
+        return 1;
+      };
+
+      const numberTransformer = async (value: number): Promise<number> => {
+        transformerCalls++;
+        return value + 1;
+      };
+
+      const stringTransformer = async (value: number): Promise<string> => {
+        transformerCalls++;
+        return 'Value: ' + value;
+      };
+
+      const asyncTry = AsyncTry.of(executor)
+        .map(numberTransformer)
+        .map(stringTransformer);
+
+      const isSuccess = await asyncTry.isSuccess();
+
+      expect(isSuccess).toStrictEqual(true);
+      expect(executorCalls).toStrictEqual(1);
+      expect(transformerCalls).toStrictEqual(2);
+
+      const result = await asyncTry.get();
+      const nextIsSuccess = await asyncTry.isSuccess();
+
+      expect(nextIsSuccess).toStrictEqual(true);
+      expect(result).toStrictEqual('Value: 2');
+      expect(executorCalls).toStrictEqual(1);
+      expect(transformerCalls).toStrictEqual(2);
     });
   });
 
@@ -155,7 +242,46 @@ describe('AsyncTry', () => {
 
     it('Should return the result of the executor when the AsyncTry is a failure.', async () => {
       const result = AsyncTry.of(throwingAsyncExecutor);
+      const isSuccess = await result.isSuccess();
+
       expect(await result.getOrElse(async () => 2)).toStrictEqual(2);
+      expect(isSuccess).toStrictEqual(false);
+    });
+
+    it('Should not cause the executor or transformers to be called more than required.', async () => {
+      let executorCalls = 0;
+      let transformerCalls = 0;
+
+      const executor = async (): Promise<number> => {
+        executorCalls++;
+        return 1;
+      };
+
+      const numberTransformer = async (value: number): Promise<number> => {
+        transformerCalls++;
+        return value + 1;
+      };
+
+      const stringTransformer = async (_value: number): Promise<string> => {
+        transformerCalls++;
+        throw testError;
+      };
+
+      const asyncTry = AsyncTry.of(executor)
+        .map(numberTransformer)
+        .map(stringTransformer);
+
+      const result = await asyncTry.getOrElse(async () => 'test');
+
+      expect(result).toStrictEqual('test');
+      expect(executorCalls).toStrictEqual(1);
+      expect(transformerCalls).toStrictEqual(2);
+
+      const nextResult = await asyncTry.getOrElse(async () => 'second test');
+
+      expect(nextResult).toStrictEqual('second test');
+      expect(executorCalls).toStrictEqual(1);
+      expect(transformerCalls).toStrictEqual(2);
     });
   });
 
@@ -215,6 +341,83 @@ describe('AsyncTry', () => {
       });
       expect(await result.isFailure()).toStrictEqual(true);
       expect(executionCount).toStrictEqual(0);
+    });
+
+    it('Should not throw if the supplied transformer throws an error.', async () => {
+      const throwingTransformer = async (_value: number): Promise<number> => {
+        throw testError;
+      };
+
+      const asyncTry = AsyncTry.of(successfulAsyncExecutor);
+
+      expect(
+        await asyncTry.andThen(throwingTransformer).isFailure()
+      ).toStrictEqual(true);
+
+      expect(
+        await asyncTry.andThen(throwingTransformer).getCause()
+      ).toStrictEqual(testError);
+    });
+
+    it('Should not cause the embedded executors or transformers to be called more than required.', async () => {
+      let executorCalls = 0;
+      let transformerCalls = 0;
+
+      const executor = async (): Promise<number> => {
+        executorCalls++;
+        return 1;
+      };
+
+      const numberTransformer = async (value: number): Promise<number> => {
+        transformerCalls++;
+        return value + 1;
+      };
+
+      const stringTransformer = async (value: number): Promise<string> => {
+        transformerCalls++;
+        return 'Value: ' + value;
+      };
+
+      const throwingStringTransformer = async (
+        _value: string
+      ): Promise<string> => {
+        transformerCalls++;
+        throw testError;
+      };
+
+      const asyncTry = AsyncTry.of(executor)
+        .andThen(async value => value + 1)
+        .map(numberTransformer)
+        .andThen(async value => value + 1)
+        .map(numberTransformer)
+        .andThen(async value => value + 1)
+        .map(stringTransformer);
+
+      const result = await asyncTry.get();
+      const isSuccess = await asyncTry.isSuccess();
+
+      expect(isSuccess).toStrictEqual(true);
+      expect(result).toStrictEqual('Value: 3');
+      expect(executorCalls).toStrictEqual(1);
+      expect(transformerCalls).toStrictEqual(3);
+
+      const nextResult = await asyncTry.andThen(async value => value + 1).get();
+
+      expect(await asyncTry.isSuccess()).toStrictEqual(true);
+      expect(nextResult).toStrictEqual('Value: 3');
+      expect(executorCalls).toStrictEqual(1);
+      expect(transformerCalls).toStrictEqual(3);
+
+      const throwingResult = asyncTry.map(throwingStringTransformer);
+
+      expect(await throwingResult.isFailure()).toStrictEqual(true);
+      expect(await throwingResult.getCause()).toStrictEqual(testError);
+
+      throwingResult.andThen(async value => value + 1);
+
+      expect(executorCalls).toStrictEqual(1);
+      expect(transformerCalls).toStrictEqual(4);
+      await expect(throwingResult.get()).rejects.toThrowError(testError);
     });
   });
 

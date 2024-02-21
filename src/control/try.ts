@@ -3,18 +3,12 @@ type Transformer<TryResult, NextTryResult> = (
   result: TryResult
 ) => NextTryResult;
 
-export class Try<TryResult, TryError extends Error> {
+export class Try<TryResult> {
   private constructor(
     private readonly isSuccessful: boolean,
     private readonly value?: TryResult,
-    private readonly error?: TryError
-  ) {
-    if (value && error) {
-      throw new Error(
-        'Try cannot be constructed with both a value and an error.'
-      );
-    }
-  }
+    private readonly error?: Error
+  ) {}
 
   /**
    * Check if the Try is successful.
@@ -42,11 +36,11 @@ export class Try<TryResult, TryError extends Error> {
    */
   map<NextTryResult>(
     transformer: Transformer<TryResult, NextTryResult>
-  ): Try<NextTryResult, TryError> {
+  ): Try<NextTryResult> {
     if (this.isSuccess()) {
-      return Try.of<NextTryResult, TryError>(() => transformer(this.value!));
+      return Try.of<NextTryResult>(() => transformer(this.value!));
     } else {
-      return new Try<NextTryResult, TryError>(false, undefined, this.error);
+      return Try.failure(this.error!);
     }
   }
 
@@ -70,7 +64,7 @@ export class Try<TryResult, TryError extends Error> {
    * @returns The value embedded in the Try, or the result of the executor.
    */
   getOrElse<NextTryResult>(
-    transformer: Transformer<TryError, NextTryResult>
+    transformer: Transformer<Error, NextTryResult>
   ): TryResult | NextTryResult {
     if (this.isSuccess()) {
       return this.value!;
@@ -85,7 +79,7 @@ export class Try<TryResult, TryError extends Error> {
    * @param failureMapper A function that takes the Try's error and returns an error.
    * @returns The value embedded in the Try.
    */
-  getOrElseThrow(failureMapper = (error: TryError): Error => error): TryResult {
+  getOrElseThrow(failureMapper = (error: Error): Error => error): TryResult {
     if (this.isSuccess()) {
       return this.value!;
     } else {
@@ -98,7 +92,7 @@ export class Try<TryResult, TryError extends Error> {
    *
    * @returns The error embedded in the Try.
    */
-  getCause(): TryError {
+  getCause(): Error {
     if (this.isSuccess()) {
       throw new Error('Cannot get cause of a successful Try.');
     } else {
@@ -110,16 +104,14 @@ export class Try<TryResult, TryError extends Error> {
    * Perform an action on the embedded value, but continue with the same Try. Does not throw if the Try is a failure.
    *
    * @param transformer A function that takes the Try's value and returns nothing.
-   * @returns The original Try.
+   * @returns The original Try if it was a failure or the transformer succeeded, otherwise a new Try with the failure of the transformer.
    */
-  andThen(
-    transformer: Transformer<TryResult, unknown>
-  ): Try<TryResult, TryError> {
+  andThen(transformer: Transformer<TryResult, unknown>): Try<TryResult> {
     if (this.isSuccess()) {
       try {
         transformer(this.value!);
       } catch (error) {
-        return Try.failure(error as TryError);
+        return Try.failure(error as Error);
       }
     }
     return this;
@@ -131,16 +123,14 @@ export class Try<TryResult, TryError extends Error> {
    * @param failureMapper A function that takes the Try's error and maps it to a new error.
    * @returns The original Try if it is a success, or a new Try with the mapped error.
    */
-  mapFailure<NextTryError extends Error>(
-    failureMapper: (error: TryError) => NextTryError
-  ): Try<TryResult, NextTryError> {
+  mapFailure(failureMapper: (error: Error) => Error): Try<TryResult> {
     if (this.isSuccess()) {
-      return Try.of<TryResult, NextTryError>(() => this.value!);
+      return Try.of<TryResult>(() => this.value!);
     } else {
       try {
         return Try.failure(failureMapper(this.error!));
       } catch (error) {
-        return Try.failure(error as NextTryError);
+        return Try.failure(error as Error);
       }
     }
   }
@@ -152,14 +142,12 @@ export class Try<TryResult, TryError extends Error> {
    * @param executor A function that might return a value or throw an error.
    * @returns A new Try with the result of the executor, or a new Try with the error if one occured in the executor.
    */
-  static of<TryResult, TryError extends Error>(
-    executor: Executor<TryResult>
-  ): Try<TryResult, TryError> {
+  static of<TryResult>(executor: Executor<TryResult>): Try<TryResult> {
     try {
       const result = executor();
       return Try.success(result);
     } catch (error) {
-      return new Try<TryResult, TryError>(false, undefined, error as TryError);
+      return Try.failure(error as Error);
     }
   }
 
@@ -169,8 +157,8 @@ export class Try<TryResult, TryError extends Error> {
    * @param value The value to embed in the Try.
    * @returns A new Try with the value.
    */
-  static success<TryResult>(value: TryResult): Try<TryResult, never> {
-    return new Try<TryResult, never>(true, value);
+  static success<TryResult>(value: TryResult): Try<TryResult> {
+    return new Try<TryResult>(true, value);
   }
 
   /**
@@ -179,9 +167,7 @@ export class Try<TryResult, TryError extends Error> {
    * @param error The error to embed in the Try.
    * @returns A new Try with the error.
    */
-  static failure<TryError extends Error>(
-    error: TryError
-  ): Try<never, TryError> {
-    return new Try<never, TryError>(false, undefined, error);
+  static failure(error: Error): Try<never> {
+    return new Try<never>(false, undefined, error);
   }
 }

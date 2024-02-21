@@ -65,17 +65,11 @@ export class Either<Left, Right> {
   }
 
   static Left<Left, Right>(left: Left): Either<Left, Right> {
-    return new Either<Left, Right>(EitherSide.Left, left) as Either<
-      Left,
-      Right
-    >;
+    return new Either<Left, Right>(EitherSide.Left, left);
   }
 
   static right<Left, Right>(right: Right): Either<Left, Right> {
-    return new Either(EitherSide.Right, undefined, right) as Either<
-      Left,
-      Right
-    >;
+    return new Either(EitherSide.Right, (undefined as unknown) as Left, right);
   }
 }
 
