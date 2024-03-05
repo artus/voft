@@ -47,6 +47,16 @@
       "limit": "10 KB"
     }
   ],
+  "size-limit/preset-small-lib": [
+    {
+      "path": "dist/voft.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/voft.esm.js",
+      "limit": "10 KB"
+    }
+  ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.0.1",
     "husky": "^8.0.3",
