@@ -2,144 +2,191 @@ import { Try } from '../try';
 
 describe('Try', () => {
   describe('of', () => {
-    test('Should return a successful Try when the executor returns a value', () => {
+    it('Should return a successful Try when the executor returns a value', () => {
       const tryResult = Try.of(() => 1);
-      expect(tryResult.isSuccess()).toBe(true);
-      expect(tryResult.get()).toBe(1);
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(1);
     });
 
-    test('Should return a failure Try when the executor throws an error', () => {
+    it('Should return a failure Try when the executor throws an error', () => {
       const tryResult = Try.of(() => {
         throw new Error('Test error');
       });
-      expect(tryResult.isFailure()).toBe(true);
+      expect(tryResult.isFailure()).toStrictEqual(true);
       expect(() => tryResult.get()).toThrowError('Test error');
     });
   });
 
   describe('success', () => {
-    test('Should return a successful Try with the result embedded', () => {
+    it('Should return a successful Try with the result embedded', () => {
       const tryResult = Try.success(1);
-      expect(tryResult.isSuccess()).toBe(true);
-      expect(tryResult.get()).toBe(1);
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(1);
     });
 
-    test('Should return a successful Try, even when the result is undefined', () => {
+    it('Should return a successful Try, even when the result is undefined', () => {
       const tryResult = Try.success(undefined);
-      expect(tryResult.isSuccess()).toBe(true);
-      expect(tryResult.get()).toBe(undefined);
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(undefined);
     });
   });
 
   describe('failure', () => {
-    test('Should return a failure Try with the error embedded', () => {
+    it('Should return a failure Try with the error embedded', () => {
       const tryResult = Try.failure(new Error('Test error'));
-      expect(tryResult.isFailure()).toBe(true);
+      expect(tryResult.isFailure()).toStrictEqual(true);
       expect(() => tryResult.get()).toThrowError('Test error');
     });
   });
 
   describe('isSuccess', () => {
-    test('Should return true when the Try is a success', () => {
+    it('Should return true when the Try is a success', () => {
       const tryResult = Try.success(1);
-      expect(tryResult.isSuccess()).toBe(true);
+      expect(tryResult.isSuccess()).toStrictEqual(true);
     });
 
-    test('Should return false when the Try is a failure', () => {
+    it('Should return false when the Try is a failure', () => {
       const tryResult = Try.failure(new Error('Test error'));
-      expect(tryResult.isSuccess()).toBe(false);
+      expect(tryResult.isSuccess()).toStrictEqual(false);
     });
   });
 
   describe('isFailure', () => {
-    test('Should return true when the Try is a failure', () => {
+    it('Should return true when the Try is a failure', () => {
       const tryResult = Try.failure(new Error('Test error'));
-      expect(tryResult.isFailure()).toBe(true);
+      expect(tryResult.isFailure()).toStrictEqual(true);
     });
 
-    test('Should return false when the Try is a success', () => {
+    it('Should return false when the Try is a success', () => {
       const tryResult = Try.success(1);
-      expect(tryResult.isFailure()).toBe(false);
+      expect(tryResult.isFailure()).toStrictEqual(false);
     });
   });
 
   describe('map', () => {
-    test('Should return a successful Try with the result of the executor when the Try is a success', () => {
+    it('Should return a successful Try with the result of the executor when the Try is a success', () => {
       const tryResult = Try.success(1).map(value => value + 1);
-      expect(tryResult.isSuccess()).toBe(true);
-      expect(tryResult.get()).toBe(2);
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(2);
     });
 
-    test('Should return a failure Try with the error when the Try is a failure', () => {
+    it('Should return a failure Try with the error when the Try is a failure', () => {
       const tryResult = Try.failure(new Error('Test error')).map(
         value => value + 1
       );
-      expect(tryResult.isFailure()).toBe(true);
+      expect(tryResult.isFailure()).toStrictEqual(true);
       expect(() => tryResult.get()).toThrowError('Test error');
     });
 
-    test('Should return a failure Try with the error when the executor throws an error', () => {
+    it('Should return a failure Try with the error when the executor throws an error', () => {
       const tryResult = Try.success(1).map(() => {
         throw new Error('Test error');
       });
-      expect(tryResult.isFailure()).toBe(true);
+      expect(tryResult.isFailure()).toStrictEqual(true);
       expect(() => tryResult.get()).toThrowError('Test error');
     });
   });
 
-  describe('get', () => {
-    test('Should return the result when the Try is a success', () => {
+  describe('mapAsync', () => {
+    it('Should return a new AsyncTry with the result of the transformation.', async () => {
       const tryResult = Try.success(1);
-      expect(tryResult.get()).toBe(1);
+      const asyncTryResult = tryResult.mapAsync(async value => value + 1);
+      const result = await asyncTryResult.get();
+      expect(result).toStrictEqual(2);
     });
 
-    test('Should throw the error when the Try is a failure', () => {
+    it('Should return a new AsyncTry with the error of the original Try if it was a failure.', async () => {
+      const tryResult = Try.failure(new Error('Test error'));
+      const asyncTryResult = tryResult.mapAsync(async value => value + 1);
+      await expect(asyncTryResult.get()).rejects.toThrowError('Test error');
+    });
+  });
+
+  describe('flatMap', () => {
+    it('Should return a successful Try with the result of the executor when the Try is a success', () => {
+      const tryResult = Try.success(1).flatMap(value => Try.success(value + 1));
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(2);
+    });
+
+    it('Should return a failure Try with the error when the Try is a failure', () => {
+      const tryResult = Try.failure(new Error('Test error')).flatMap(value =>
+        Try.success(value + 1)
+      );
+      expect(tryResult.isFailure()).toStrictEqual(true);
+      expect(() => tryResult.get()).toThrowError('Test error');
+    });
+
+    it('Should return a failure Try with the error when the executor throws an error', () => {
+      const tryResult = Try.success(1).flatMap(() => {
+        return Try.failure(new Error('Test error'));
+      });
+      expect(tryResult.isFailure()).toStrictEqual(true);
+      expect(() => tryResult.get()).toThrowError('Test error');
+    });
+
+    it('Should unwrap a nested Try.', () => {
+      const tryResult = Try.success(Try.success(1)).flatMap();
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(1);
+    });
+  });
+
+  describe('get', () => {
+    it('Should return the result when the Try is a success', () => {
+      const tryResult = Try.success(1);
+      expect(tryResult.get()).toStrictEqual(1);
+    });
+
+    it('Should throw the error when the Try is a failure', () => {
       const tryResult = Try.failure(new Error('Test error'));
       expect(() => tryResult.get()).toThrowError('Test error');
     });
   });
 
   describe('getOrElse', () => {
-    test('Should return the result when the Try is a success', () => {
+    it('Should return the result when the Try is a success', () => {
       const tryResult = Try.success(1);
-      expect(tryResult.getOrElse(() => 2)).toBe(1);
+      expect(tryResult.getOrElse(() => 2)).toStrictEqual(1);
     });
 
-    test('Should return the result of the executor when the Try is a failure', () => {
+    it('Should return the result of the executor when the Try is a failure', () => {
       const tryResult = Try.failure(new Error('Test error'));
-      expect(tryResult.getOrElse(() => 2)).toBe(2);
+      expect(tryResult.getOrElse(() => 2)).toStrictEqual(2);
     });
 
-    test('Should apply the executor to the error when the Try is a failure', () => {
+    it('Should apply the executor to the error when the Try is a failure', () => {
       const tryResult = Try.failure(new Error('Test error'));
-      expect(tryResult.getOrElse(error => error.message)).toBe('Test error');
+      expect(tryResult.getOrElse(error => error.message)).toStrictEqual(
+        'Test error'
+      );
     });
 
-    test('Should apply the executor to the error when the Try is a failure, even when the executor returns undefined', () => {
+    it('Should apply the executor to the error when the Try is a failure, even when the executor returns undefined', () => {
       const tryResult = Try.failure(new Error('Test error'));
-      expect(tryResult.getOrElse(() => undefined)).toBe(undefined);
+      expect(tryResult.getOrElse(() => undefined)).toStrictEqual(undefined);
     });
   });
 
   describe('getOrElseThrow', () => {
-    test('Should return the result when the Try is a success', () => {
+    it('Should return the result when the Try is a success', () => {
       const tryResult = Try.success(1);
-      expect(tryResult.getOrElseThrow()).toBe(1);
+      expect(tryResult.getOrElseThrow()).toStrictEqual(1);
     });
 
-    test('Should throw the error when the Try is a failure', () => {
+    it('Should throw the error when the Try is a failure', () => {
       const tryResult = Try.failure(new Error('Test error'));
       expect(() => tryResult.getOrElseThrow()).toThrowError('Test error');
     });
 
-    test('Should apply the executor to the error when the Try is a failure', () => {
+    it('Should apply the executor to the error when the Try is a failure', () => {
       const tryResult = Try.failure(new Error('Test error'));
       expect(() =>
         tryResult.getOrElseThrow(error => new Error(error.message))
       ).toThrowError('Test error');
     });
 
-    test('Should apply the executor to the error when the Try is a failure, even when the executor returns undefined', () => {
+    it('Should apply the executor to the error when the Try is a failure, even when the executor returns undefined', () => {
       const tryResult = Try.failure(new Error('Test error'));
       expect(() =>
         tryResult.getOrElseThrow(() => (undefined as unknown) as Error)
@@ -148,63 +195,84 @@ describe('Try', () => {
   });
 
   describe('getCause', () => {
-    test('Should throw an error when the Try is a success', () => {
+    it('Should throw an error when the Try is a success', () => {
       const tryResult = Try.success(1);
       expect(() => tryResult.getCause()).toThrowError(
         'Cannot get cause of a successful Try.'
       );
     });
 
-    test('Should return the error when the Try is a failure', () => {
+    it('Should return the error when the Try is a failure', () => {
       const tryResult = Try.failure(new Error('Test error'));
       expect(tryResult.getCause()).toBeInstanceOf(Error);
-      expect(tryResult.getCause().message).toBe('Test error');
+      expect(tryResult.getCause().message).toStrictEqual('Test error');
     });
   });
 
   describe('andThen', () => {
-    test('Should run the executor, but return the original Try if the executor did not throw', () => {
+    it('Should run the executor, but return the original Try if the executor did not throw', () => {
       const tryResult = Try.success(1);
       const nextStepTry = tryResult.andThen(() => 2);
-      expect(tryResult.isSuccess()).toBe(true);
-      expect(tryResult.get()).toBe(1);
-      expect(nextStepTry).toBe(tryResult);
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(1);
+      expect(nextStepTry).toStrictEqual(tryResult);
     });
 
-    test('Should run the executor, but return a new Try if the executor threw', () => {
+    it('Should run the executor, but return a new Try if the executor threw', () => {
       const tryResult = Try.success(1);
       const nextStepTry = tryResult.andThen(() => {
         throw new Error('Test error');
       });
-      expect(tryResult.isSuccess()).toBe(true);
-      expect(tryResult.get()).toBe(1);
-      expect(nextStepTry.isFailure()).toBe(true);
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(1);
+      expect(nextStepTry.isFailure()).toStrictEqual(true);
       expect(() => nextStepTry.get()).toThrowError('Test error');
+    });
+
+    it('It should stop subsequent transformations if the transformator throws', () => {
+      let executionCount = 0;
+      const throwingTransformer = (_value: number): void => {
+        throw new Error('Test error');
+      };
+
+      const incrementingTransformer = (value: number): number => {
+        executionCount++;
+        return value + 1;
+      };
+
+      const tryResult = Try.success(1)
+        .map(incrementingTransformer)
+        .andThen(throwingTransformer)
+        .map(incrementingTransformer);
+
+      expect(tryResult.isFailure()).toStrictEqual(true);
+      expect(() => tryResult.get()).toThrowError('Test error');
+      expect(executionCount).toStrictEqual(1);
     });
   });
 
   describe('mapFailure', () => {
-    test('Should return a successful Try with the same result when the Try is a success', () => {
+    it('Should return a successful Try with the same result when the Try is a success', () => {
       const tryResult = Try.success(1).mapFailure(
         () => new Error('Test error')
       );
-      expect(tryResult.isSuccess()).toBe(true);
-      expect(tryResult.get()).toBe(1);
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(1);
     });
 
-    test('Should return a failure Try with the result of the executor when the Try is a failure', () => {
+    it('Should return a failure Try with the result of the executor when the Try is a failure', () => {
       const tryResult = Try.failure(new Error('Test error')).mapFailure(
         error => new Error(error.message + ', New error')
       );
-      expect(tryResult.isFailure()).toBe(true);
+      expect(tryResult.isFailure()).toStrictEqual(true);
       expect(() => tryResult.get()).toThrowError('Test error, New error');
     });
 
-    test('Should return a failure Try with the result of the executor when the executor throws an error', () => {
+    it('Should return a failure Try with the result of the executor when the executor throws an error', () => {
       const tryResult = Try.failure(new Error('Test error')).mapFailure(() => {
         throw new Error('New error');
       });
-      expect(tryResult.isFailure()).toBe(true);
+      expect(tryResult.isFailure()).toStrictEqual(true);
       expect(() => tryResult.get()).toThrowError('New error');
     });
   });

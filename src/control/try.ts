@@ -1,8 +1,18 @@
+import { AsyncTry } from './async-try';
+
 type Executor<TryResult> = () => TryResult;
 type Transformer<TryResult, NextTryResult> = (
   result: TryResult
 ) => NextTryResult;
 
+/**
+ * A Try is a container for a value or an error. It is used to handle exceptions in a functional way.
+ * A Try can be successful or a failure. A successful Try contains a value, while a failed Try contains an error.
+ * A Try can be mapped to a new Try, or the value can be extracted from the Try.
+ * If the Try is a failure, the error can be extracted or mapped to a new error.
+ * The Try can also be used to perform actions on the value, or to provide a default value if the Try is a failure.
+ * The Try can be used to chain operations together.
+ */
 export class Try<TryResult> {
   private constructor(
     private readonly isSuccessful: boolean,
@@ -32,7 +42,7 @@ export class Try<TryResult> {
    * Map the Try to a new Try.
    *
    * @param transformer A function that takes the Try's value and returns a new value.
-   * @returns A new Try with the mapped value, a new Try with the error if one occured in the executor, or the original Try if it is a failure.
+   * @returns A new Try with the mapped value, a new Try with the error if one occured in the transformer, or the original Try if it is a failure.
    */
   map<NextTryResult>(
     transformer: Transformer<TryResult, NextTryResult>
@@ -42,6 +52,47 @@ export class Try<TryResult> {
     } else {
       return Try.failure(this.error!);
     }
+  }
+
+  /**
+   * Map the Try to a new AsyncTry with the result of the Async Transformer. If the Try is a failure, the new AsyncTry will be a failure.
+   * @param transformer An async function that takes the Try's value and returns a new value as a Promise.
+   * @returns A new AsyncTry with the result of the transformer, a new AsyncTry with the error if one occured in the transformer, or a new AsyncTry with the original failure if this is a failure.
+   */
+  mapAsync<NextTryResult>(
+    transformer: Transformer<TryResult, Promise<NextTryResult>>
+  ): AsyncTry<NextTryResult> {
+    if (this.isFailure()) {
+      return AsyncTry.failure(this.error!);
+    } else {
+      return AsyncTry.of(() => transformer(this.value!));
+    }
+  }
+
+  /**
+   * Map the Try to a new Try, but flatten the result. If the Try is a failure, the new Try will be a failure.
+   *
+   * @param transformer A function that takes the Try's value and returns a new Try.
+   * @returns A new Try with the result of the transformer, a new Try with the error if one occured in the transformer, or the original Try if it is a failure.
+   */
+  flatMap<NextTryResult>(
+    transformer: Transformer<TryResult, Try<NextTryResult>> = (
+      value: TryResult
+    ): Try<NextTryResult> => Try.of(() => (value as unknown) as NextTryResult)
+  ): Try<NextTryResult> {
+    if (this.isFailure()) {
+      return Try.failure(this.error!);
+    }
+
+    if (this.value && this.value instanceof Try) {
+      return this.value.map(
+        (value: TryResult): NextTryResult => {
+          return transformer(value).get();
+        }
+      );
+    }
+
+    return transformer(this.value!);
   }
 
   /**
@@ -58,10 +109,10 @@ export class Try<TryResult> {
   }
 
   /**
-   * Return the value embedded in the Try, or return the result of the executor if the Try is a failure.
+   * Return the value embedded in the Try, or return the result of the transformer if the Try is a failure.
    *
    * @param transformer A function that takes the Try's error and returns a value.
-   * @returns The value embedded in the Try, or the result of the executor.
+   * @returns The value embedded in the Try, or the result of the transformer.
    */
   getOrElse<NextTryResult>(
     transformer: Transformer<Error, NextTryResult>
@@ -102,6 +153,7 @@ export class Try<TryResult> {
 
   /**
    * Perform an action on the embedded value, but continue with the same Try. Does not throw if the Try is a failure.
+   * If the transformer throws, the result will be a failed Try.
    *
    * @param transformer A function that takes the Try's value and returns nothing.
    * @returns The original Try if it was a failure or the transformer succeeded, otherwise a new Try with the failure of the transformer.

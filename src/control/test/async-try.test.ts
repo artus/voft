@@ -160,6 +160,51 @@ describe('AsyncTry', () => {
     });
   });
 
+  describe('flatMap', () => {
+    it('Should apply the transformer on the original result, and return a new AsyncTry', async () => {
+      const result = AsyncTry.of(successfulAsyncExecutor).flatMap(async value =>
+        AsyncTry.of(async () => value + 1)
+      );
+      expect(await result.get()).toStrictEqual(2);
+    });
+
+    it('Should not apply the transformation if the original AsyncTry is a failure.', async () => {
+      let executionCount = 0;
+      const result = AsyncTry.of(throwingAsyncExecutor).flatMap(async value => {
+        executionCount++;
+        return AsyncTry.of(async () => value + 1);
+      });
+      expect(await result.isFailure()).toStrictEqual(true);
+      expect(executionCount).toStrictEqual(0);
+    });
+
+    it('Should not apply the transformation on an AsyncTry that was already a failure.', async () => {
+      let executionCount = 0;
+      const result = AsyncTry.failure(testError).flatMap(async _value => {
+        executionCount++;
+        return AsyncTry.of(async () => 1);
+      });
+      expect(await result.isFailure()).toStrictEqual(true);
+      expect(executionCount).toStrictEqual(0);
+    });
+
+    it('Should unwrap nested Try', async () => {
+      const result = AsyncTry.of(async () =>
+        AsyncTry.of(successfulAsyncExecutor)
+      ).flatMap();
+      expect(await result.get()).toStrictEqual(1);
+
+      const anotherResult = AsyncTry.of(async () =>
+        AsyncTry.of(successfulAsyncExecutor)
+      );
+
+      expect(await (await anotherResult.get()).get()).toStrictEqual(1);
+
+      const finalResult = anotherResult.flatMap();
+      expect(await finalResult.get()).toStrictEqual(1);
+    });
+  });
+
   describe('isSuccess', () => {
     it('Should return true when the AsyncTry is a success.', async () => {
       const result = AsyncTry.of(successfulAsyncExecutor);
@@ -333,6 +378,16 @@ describe('AsyncTry', () => {
       expect(executionCount).toStrictEqual(1);
     });
 
+    it('Should be able to handle transformers that do not return a Promise.', async () => {
+      let executionCount = 0;
+      const asyncTry = AsyncTry.of(successfulAsyncExecutor);
+      const result = await asyncTry.andThen(() => executionCount++).get();
+      const secondResult = await asyncTry.andThen(() => executionCount++).get();
+      expect(result).toStrictEqual(1);
+      expect(secondResult).toStrictEqual(1);
+      expect(executionCount).toStrictEqual(2);
+    });
+
     it('Should not apply the transformer when the AsyncTry is a failure.', async () => {
       let executionCount = 0;
       const result = AsyncTry.of(throwingAsyncExecutor).andThen(async value => {
@@ -357,6 +412,29 @@ describe('AsyncTry', () => {
       expect(
         await asyncTry.andThen(throwingTransformer).getCause()
       ).toStrictEqual(testError);
+    });
+
+    it('Should stop subsequent transformations if the result of the transformer is a failure.', async () => {
+      let executionCount = 0;
+      const throwingTransformer = async (_value: number): Promise<number> => {
+        throw testError;
+      };
+
+      const incrementingTransformer = async (
+        value: number
+      ): Promise<number> => {
+        executionCount++;
+        return value + 1;
+      };
+
+      const asyncTry = AsyncTry.of(successfulAsyncExecutor)
+        .map(incrementingTransformer)
+        .andThen(throwingTransformer)
+        .map(incrementingTransformer);
+
+      expect(await asyncTry.isFailure()).toStrictEqual(true);
+      expect(await asyncTry.getCause()).toStrictEqual(testError);
+      expect(executionCount).toStrictEqual(1);
     });
 
     it('Should not cause the embedded executors or transformers to be called more than required.', async () => {

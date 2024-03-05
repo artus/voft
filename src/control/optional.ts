@@ -40,8 +40,8 @@ export class Optional<Embedded> {
   }
 
   getOrElseThrow(
-    failureMapper = (error: Error): never => {
-      throw error;
+    failureMapper = (error: Error): Error => {
+      return error;
     }
   ): Embedded {
     if (this.isPresent()) {
@@ -51,9 +51,7 @@ export class Optional<Embedded> {
     }
   }
 
-  filter(
-    predicate: (embedded: Embedded) => Optional<Embedded>
-  ): Optional<Embedded> {
+  filter(predicate: (embedded: Embedded) => boolean): Optional<Embedded> {
     if (this.isPresent() && predicate(this.value!)) {
       return this;
     } else {

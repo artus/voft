@@ -1,0 +1,7 @@
+{
+  "out": "./docs",
+  "mode": "modules",
+  "exclude": "**/node_modules/**",
+  "theme": "default", // TypeDoc doesn't natively support Minami, but you can choose from other themes or customize one.
+  "plugin": ["typedoc-plugin-markdown"]
+}
