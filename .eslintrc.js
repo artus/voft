@@ -7,6 +7,12 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'error',
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
   },
   ignorePatterns: ['dist/'],
   parserOptions: {
