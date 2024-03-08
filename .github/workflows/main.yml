@@ -12,24 +12,21 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Use Node ${{ matrix.node }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Remove node_modules
-        run: rm -rf node_modules
-
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
-      - name: Lint
-        run: yarn lint
+      - name: Run eslint
+        run: npm run lint 
 
-      - name: Test
-        run: yarn test --ci --coverage --maxWorkers=2
+      - name: Run tests with coverage
+        run: npm run test:coverage
 
-      - name: Build
-        run: yarn build
+      - name: Building package
+        run: npm build
