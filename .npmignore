@@ -1,0 +1,8 @@
+*/test/*
+.github
+.husky
+coverage/
+examples
+.eslintrc.js
+.gitignore
+jest.config.js

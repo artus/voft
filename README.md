@@ -26,7 +26,7 @@ This runs the tests in all `/test` directories.
 npm run test:coverage
 ```
 
-This runs the tests and generates a coverage report. The coverage report is *not* saved, but is printed to the console.
+This runs the tests and generates a coverage report.
 The tests will fail if the coverage is below 100% for all files.
 
 ### lint
