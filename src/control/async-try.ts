@@ -48,7 +48,7 @@ export class AsyncTry<TryResult> {
     transformer: Transformer<TryResult, AsyncTry<NextTryResult>> = (
       value: TryResult
     ): AsyncTry<NextTryResult> =>
-      AsyncTry.of(async () => (value as unknown) as NextTryResult)
+      AsyncTry.of(async () => value as unknown as NextTryResult)
   ): AsyncTry<NextTryResult> {
     if (this.error) {
       return AsyncTry.failure<NextTryResult>(this.error);

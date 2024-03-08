@@ -59,8 +59,8 @@ export class Either<Left, Right> {
       this.activeSide === EitherSide.None
         ? EitherSide.None
         : this.activeSide === EitherSide.Left
-        ? EitherSide.Right
-        : EitherSide.Left;
+          ? EitherSide.Right
+          : EitherSide.Left;
     return new Either(activeSide, this._right, this._left);
   }
 
@@ -69,7 +69,7 @@ export class Either<Left, Right> {
   }
 
   static right<Left, Right>(right: Right): Either<Left, Right> {
-    return new Either(EitherSide.Right, (undefined as unknown) as Left, right);
+    return new Either(EitherSide.Right, undefined as unknown as Left, right);
   }
 }
 

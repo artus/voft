@@ -1,18 +1,16 @@
 module.exports = {
-  "extends": [
-    "react-app",
-    "prettier/@typescript-eslint",
-    "plugin:prettier/recommended"
+  parser: '@typescript-eslint/parser',
+  extends: [
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
+    'prettier',
   ],
-  "settings": {
-    "react": {
-      "version": "999.999.999"
-    }
+  rules: {
+    '@typescript-eslint/explicit-function-return-type': 'error',
   },
-  "rules": {
-    "@typescript-eslint/explicit-function-return-type": "error"
+  ignorePatterns: ['dist/'],
+  parserOptions: {
+    sourceType: 'module',
+    ecmaVersion: 2016,
   },
-  "ignorePatterns": [
-    "dist/"
-  ]
-}
+};

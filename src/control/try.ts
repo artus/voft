@@ -78,18 +78,16 @@ export class Try<TryResult> {
   flatMap<NextTryResult>(
     transformer: Transformer<TryResult, Try<NextTryResult>> = (
       value: TryResult
-    ): Try<NextTryResult> => Try.of(() => (value as unknown) as NextTryResult)
+    ): Try<NextTryResult> => Try.of(() => value as unknown as NextTryResult)
   ): Try<NextTryResult> {
     if (this.isFailure()) {
       return Try.failure(this.error!);
     }
 
     if (this.value && this.value instanceof Try) {
-      return this.value.map(
-        (value: TryResult): NextTryResult => {
-          return transformer(value).get();
-        }
-      );
+      return this.value.map((value: TryResult): NextTryResult => {
+        return transformer(value).get();
+      });
     }
 
     return transformer(this.value!);

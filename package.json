@@ -11,16 +11,11 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test",
-    "test:coverage": "tsdx test --coverage",
-    "lint": "tsdx lint",
-    "lint-write": "tsdx lint --write-file",
-    "lint-fix": "tsdx lint --fix",
-    "prepare": "tsdx build",
-    "size": "size-limit",
-    "analyze": "size-limit --why",
+    "build": "tsc",
+    "test": "jest",
+    "test:coverage": "jest --collectCoverage --collectCoverageFrom=src/**/*.ts",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "examples": "ts-node examples/index.ts"
   },
   "husky": {
@@ -37,23 +32,21 @@
   "name": "voft",
   "author": "artusvranken",
   "module": "dist/voft.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/voft.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/voft.esm.js",
-      "limit": "10 KB"
-    }
-  ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^11.0.1",
+    "@types/jest": "^29.5.12",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
     "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
     "size-limit": "^7.0.8",
+    "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
-    "tsdx": "^0.14.1",
     "tslib": "^2.6.2",
-    "typescript": "^3.9.10"
+    "typescript": "^5.4.2",
+    "typescript-eslint": "^7.1.1"
   }
 }
