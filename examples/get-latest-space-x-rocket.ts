@@ -24,7 +24,7 @@ async function getRocket(rocketIdentifier: string): Promise<Rocket> {
 export function printRocketNameOfLatestLaunch(): AsyncTry<string> {
   return AsyncTry.of(getLatestLaunch)
     .andThen(() => console.log('Got the latest launch!'))
-    .map(launch => launch.rocket)
+    .map((launch) => launch.rocket)
     .andThen((rocketId: string) =>
       console.log(`Got the rocket id: ${rocketId}`)
     )

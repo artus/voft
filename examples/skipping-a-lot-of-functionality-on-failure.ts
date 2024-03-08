@@ -13,9 +13,7 @@ async function toLowerCase(value: string): Promise<string> {
 }
 
 export async function skippingALotOfFunctionalityOnFailure(): Promise<void> {
-  const asyncTry = AsyncTry.of(fail)
-    .map(toUpperCase)
-    .map(toLowerCase);
+  const asyncTry = AsyncTry.of(fail).map(toUpperCase).map(toLowerCase);
 
   const isFailure = await asyncTry.isFailure();
   console.log(`The AsyncTry is a failure: ${isFailure}`);

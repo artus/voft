@@ -355,6 +355,22 @@ describe('AsyncTry', () => {
     });
   });
 
+  describe('resolve', () => {
+    it('Should return a Right Either when the AsyncTry is a success.', async () => {
+      const result = AsyncTry.of(successfulAsyncExecutor);
+      const either = await result.resolve();
+      expect(either.isRight()).toStrictEqual(true);
+      expect(either.getRight()).toStrictEqual(1);
+    });
+
+    it('Should return a Left Either when the AsyncTry is a failure.', async () => {
+      const result = AsyncTry.of(throwingAsyncExecutor);
+      const either = await result.resolve();
+      expect(either.isLeft()).toStrictEqual(true);
+      expect(either.getLeft()).toStrictEqual(testError);
+    });
+  });
+
   describe('getCause', () => {
     it('Should return the error when the AsyncTry is a failure.', async () => {
       const result = AsyncTry.of(throwingAsyncExecutor);

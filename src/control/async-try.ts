@@ -1,3 +1,5 @@
+import { Either } from './either';
+
 type Executor<TryResult> = () => Promise<TryResult>;
 type Transformer<TryResult, NextTryResult> = (
   result: TryResult
@@ -90,6 +92,18 @@ export class AsyncTry<TryResult> {
         this.error = error as Error;
         return Promise.resolve(false);
       }
+    }
+  }
+
+  /**
+   * Try to resolve the AsyncTry to an Either. If the AsyncTry is a failure, the Either will be of type 'Left' and contain the error. If the AsyncTry is successful, the Either will be of type 'Right' and contain the value.
+   * @returns A Promise containing an Either with the result of the AsyncTry.
+   */
+  async resolve(): Promise<Either<Error, TryResult>> {
+    if (await this.isSuccess()) {
+      return Either.right(this.result!);
+    } else {
+      return Either.left(this.error!);
     }
   }
 
