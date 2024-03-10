@@ -30,7 +30,7 @@
   "author": "Artus Vranken",
   "repository": {
     "type": "git",
-    "url": "https://www.github.com/artus/voft"
+    "url": "git+https://github.com/artus/voft.git"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
