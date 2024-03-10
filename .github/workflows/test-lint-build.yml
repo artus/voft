@@ -1,5 +1,8 @@
-name: CI
-on: [push]
+name: CI - DEV
+on:
+  push:
+    branches-ignore:
+      - main
 jobs:
   build:
     name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
@@ -30,9 +33,3 @@ jobs:
 
       - name: Building package
         run: npm run build
-
-      - name: Publish to npm
-        if: github.ref == 'refs/heads/main'
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

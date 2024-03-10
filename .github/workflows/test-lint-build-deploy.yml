@@ -1,0 +1,36 @@
+name: CI - MAIN
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
+    runs-on: 'ubuntu-latest'
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Use Node 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run eslint
+        run: npm run lint 
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Building package
+        run: npm run build
+
+      - name: Publish to npm
+        if: github.ref == 'refs/heads/main'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
