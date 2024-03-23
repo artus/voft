@@ -12,6 +12,12 @@ type Transformer<TryResult, NextTryResult> = (
  * If the Try is a failure, the error can be extracted or mapped to a new error.
  * The Try can also be used to perform actions on the value, or to provide a default value if the Try is a failure.
  * The Try can be used to chain operations together.
+ *
+ * @example
+ * const result = Try.of(someFunctionThatMightThrow)
+ *  .map(value => value + 1)
+ *  .andThen(console.log)
+ *  .getOrElse(() => 5);
  */
 export class Try<TryResult> {
   private constructor(
@@ -209,7 +215,7 @@ export class Try<TryResult> {
    * @param failureMapper A function that takes the Try's error and maps it to a new successful Try.
    * @returns The original Try if it is a success, or a new Try with the original failure mapped to a success.
    */
-  mapToSuccess(failureMapper: (error: Error) => TryResult): Try<TryResult> {
+  recoverWith(failureMapper: (error: Error) => TryResult): Try<TryResult> {
     if (this.isSuccess()) {
       return this;
     } else {

@@ -8,6 +8,10 @@ enum EitherSide {
  * By convention, the 'Left' type is used to represent the failure and the 'Right' type is used to represent the success.
  * An Either supports values that are null or undefined. It's up the consumer to decide if these values are valid or not.
  * When an Either is created, an ActiveSide is set. This ActiveSide is used to determine if the Either is a 'Left' or a 'Right', *not* the value itself.
+ *
+ * @example
+ * const value = 5;
+ * const result = value > 0 ? Either.right(value) : Either.left('Value must be positive');
  */
 export class Either<Left, Right> {
   private constructor(

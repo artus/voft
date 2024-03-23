@@ -6,3 +6,4 @@ examples
 .eslintrc.js
 .gitignore
 jest.config.js
+docs/

@@ -1,5 +1,5 @@
 {
-  "version": "0.2.2",
+  "version": "1.0.0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -18,7 +18,8 @@
     "lint:fix": "eslint . --ext .ts --fix",
     "examples": "ts-node examples/index.ts",
     "prepare": "husky",
-    "precommit": "npm run lint && npm run test:coverage && npm run build"
+    "docs": "typedoc --out docs src/index.ts",
+    "precommit": "npm run lint && npm run test:coverage && npm run build && npm run docs"
   },
   "prettier": {
     "printWidth": 80,
@@ -47,6 +48,7 @@
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "tslib": "^2.6.2",
+    "typedoc": "^0.25.12",
     "typescript": "^5.4.2",
     "typescript-eslint": "^7.1.1"
   }

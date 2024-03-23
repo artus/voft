@@ -6,7 +6,7 @@ type Transformer<TryResult, NextTryResult> = (
 ) => NextTryResult | Promise<NextTryResult>;
 
 /**
- * An asynchronous version of the Try class.
+ * An asynchronous version of the {@link Try} class.
  * An AsyncTry is a container for a value that may or may not be present, and may or may not be an error.
  * It is used to handle asynchronous operations that may fail.
  * An AsyncTry can be successful or a failure. A successful AsyncTry contains a value, while a failed AsyncTry contains an error.
@@ -14,6 +14,12 @@ type Transformer<TryResult, NextTryResult> = (
  * If the AsyncTry is a failure, the error can be extracted or mapped to a new error.
  * The AsyncTry can also be used to perform actions on the value, or to provide a default value if the AsyncTry is a failure.
  * The AsyncTry can be used to chain operations together.
+ *
+ * @example
+ * const result = await AsyncTry.of(someAsyncFunctionThatMightThrow)
+ *  .map(value => value + 1)
+ *  .andThen(console.log)
+ *  .getOrElse(() => 5);
  */
 export class AsyncTry<TryResult> {
   private result?: TryResult;
@@ -241,9 +247,7 @@ export class AsyncTry<TryResult> {
    * @param failureMapper A function that takes the error and returns a new successful value.
    * @returns A new successful AsyncTry with the mapped error, or the original AsyncTry if it is a success.
    */
-  mapToSuccess(
-    failureMapper: (error: Error) => TryResult
-  ): AsyncTry<TryResult> {
+  recoverWith(failureMapper: (error: Error) => TryResult): AsyncTry<TryResult> {
     if (this.result) {
       return this;
     }

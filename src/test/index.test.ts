@@ -6,7 +6,5 @@ describe('index', () => {
     expect(voft).toHaveProperty('AsyncTry');
     expect(voft).toHaveProperty('Either');
     expect(voft).toHaveProperty('Optional');
-    expect(voft).toHaveProperty('HttpError');
-    expect(voft).toHaveProperty('HTTP_CODES');
   });
 });
