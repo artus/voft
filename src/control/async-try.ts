@@ -241,9 +241,7 @@ export class AsyncTry<TryResult> {
    * @param failureMapper A function that takes the error and returns a new successful value.
    * @returns A new successful AsyncTry with the mapped error, or the original AsyncTry if it is a success.
    */
-  mapToSuccess(
-    failureMapper: (error: Error) => TryResult
-  ): AsyncTry<TryResult> {
+  recoverWith(failureMapper: (error: Error) => TryResult): AsyncTry<TryResult> {
     if (this.result) {
       return this;
     }

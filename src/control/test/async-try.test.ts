@@ -583,20 +583,20 @@ describe('AsyncTry', () => {
     });
   });
 
-  describe('mapToSuccess', () => {
+  describe('recoverWith', () => {
     it('Should return the original AsyncTry when it is a success.', async () => {
-      const result = AsyncTry.of(successfulAsyncExecutor).mapToSuccess(() => 2);
+      const result = AsyncTry.of(successfulAsyncExecutor).recoverWith(() => 2);
 
       expect(await result.isSuccess()).toStrictEqual(true);
       expect(await result.get()).toStrictEqual(1);
     });
 
     it('Should return a new AsyncTry with the mapped error when the original AsyncTry is a failure.', async () => {
-      const result = AsyncTry.of(throwingAsyncExecutor).mapToSuccess(() => 2);
+      const result = AsyncTry.of(throwingAsyncExecutor).recoverWith(() => 2);
       const otherResult = AsyncTry.of(throwingAsyncExecutor);
 
       const otherResultCause = await otherResult.getCause();
-      const mappedFailureResult = otherResult.mapToSuccess(() => 3);
+      const mappedFailureResult = otherResult.recoverWith(() => 3);
 
       expect(await result.isSuccess()).toStrictEqual(true);
       expect(await result.get()).toStrictEqual(2);
@@ -607,13 +607,13 @@ describe('AsyncTry', () => {
 
     it('Should not apply the failureMapper when the AsyncTry is a success.', async () => {
       let executionCount = 0;
-      const result = AsyncTry.of(successfulAsyncExecutor).mapToSuccess(() => {
+      const result = AsyncTry.of(successfulAsyncExecutor).recoverWith(() => {
         executionCount++;
         return 2;
       });
 
       const resolvedResult = await result.get();
-      result.mapToSuccess(() => {
+      result.recoverWith(() => {
         executionCount++;
         return 2;
       });
@@ -626,7 +626,7 @@ describe('AsyncTry', () => {
     it('Should not throw if the failureMapper throws an error.', async () => {
       const asyncTry = AsyncTry.of(throwingAsyncExecutor);
 
-      const result = asyncTry.mapToSuccess(() => {
+      const result = asyncTry.recoverWith(() => {
         throw testError;
       });
 

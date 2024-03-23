@@ -287,9 +287,9 @@ describe('Try', () => {
     });
   });
 
-  describe('mapToSuccess', () => {
+  describe('recoverWith', () => {
     it('Should return a successful Try with the result when the Try is a success', () => {
-      const tryResult = Try.success(1).mapToSuccess(() => 2);
+      const tryResult = Try.success(1).recoverWith(() => 2);
       expect(tryResult.isSuccess()).toStrictEqual(true);
       expect(tryResult.get()).toStrictEqual(1);
     });
@@ -297,7 +297,7 @@ describe('Try', () => {
     it('Should return a successful Try with the result when the Try is a failure', () => {
       const tryResult = Try.of<number>(() => {
         throw new Error('Test error');
-      }).mapToSuccess(() => 2);
+      }).recoverWith(() => 2);
       expect(tryResult.isSuccess()).toStrictEqual(true);
       expect(tryResult.get()).toStrictEqual(2);
     });
@@ -305,7 +305,7 @@ describe('Try', () => {
     it('Should return a failed Try with the error when the transformer throws an error', () => {
       const tryResult = Try.of<number>(() => {
         throw new Error('Test error');
-      }).mapToSuccess(() => {
+      }).recoverWith(() => {
         throw new Error('Another test error');
       });
       expect(tryResult.isFailure()).toStrictEqual(true);
