@@ -253,6 +253,66 @@ describe('Try', () => {
     });
   });
 
+  describe('onFailure', () => {
+    it('Should run the executor, but return the original Try if the executor did not throw', () => {
+      const tryResult = Try.success(1);
+      const nextStepTry = tryResult.onFailure(() => {});
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(1);
+      expect(nextStepTry).toStrictEqual(tryResult);
+    });
+
+    it('Should run the executor, but return a new Try if the executor threw', () => {
+      const tryResult = Try.failure(new Error('Test error'));
+      const nextStepTry = tryResult.onFailure(() => {
+        throw new Error('New error');
+      });
+      expect(tryResult.isFailure()).toStrictEqual(true);
+      expect(() => tryResult.get()).toThrow('Test error');
+      expect(nextStepTry.isFailure()).toStrictEqual(true);
+      expect(() => nextStepTry.get()).toThrow('New error');
+    });
+
+    it('Should do nothing if the Try is a success', () => {
+      let executionCount = 0;
+      const incrementingTransformer = (): void => {
+        executionCount++;
+      };
+
+      const tryResult = Try.success(1).onFailure(incrementingTransformer);
+
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(1);
+      expect(executionCount).toStrictEqual(0);
+    });
+  });
+
+  describe('mapToSuccess', () => {
+    it('Should return a successful Try with the result when the Try is a success', () => {
+      const tryResult = Try.success(1).mapToSuccess(() => 2);
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(1);
+    });
+
+    it('Should return a successful Try with the result when the Try is a failure', () => {
+      const tryResult = Try.of<number>(() => {
+        throw new Error('Test error');
+      }).mapToSuccess(() => 2);
+      expect(tryResult.isSuccess()).toStrictEqual(true);
+      expect(tryResult.get()).toStrictEqual(2);
+    });
+
+    it('Should return a failed Try with the error when the transformer throws an error', () => {
+      const tryResult = Try.of<number>(() => {
+        throw new Error('Test error');
+      }).mapToSuccess(() => {
+        throw new Error('Another test error');
+      });
+      expect(tryResult.isFailure()).toStrictEqual(true);
+      expect(() => tryResult.get()).toThrow('Another test error');
+    });
+  });
+
   describe('mapFailure', () => {
     it('Should return a successful Try with the same result when the Try is a success', () => {
       const tryResult = Try.success(1).mapFailure(

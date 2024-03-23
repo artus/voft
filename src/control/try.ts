@@ -150,6 +150,23 @@ export class Try<TryResult> {
   }
 
   /**
+   * Perform an action on the Error that caused this Try to be a failure. Does nothing if the Try is a success.
+   *
+   * @param transformer A function that takes the Try's error and returns nothing.
+   * @returns The original Try if it was a success or the transformer succeeded, otherwise a new Try with the failure of the transformer.
+   */
+  onFailure(transformer: Transformer<Error, unknown>): Try<TryResult> {
+    if (this.isFailure()) {
+      try {
+        transformer(this.getCause());
+      } catch (error) {
+        return Try.failure(error as Error);
+      }
+    }
+    return this;
+  }
+
+  /**
    * Perform an action on the embedded value, but continue with the same Try. Does not throw if the Try is a failure.
    * If the transformer throws, the result will be a failed Try.
    *
@@ -182,6 +199,21 @@ export class Try<TryResult> {
       } catch (error) {
         return Try.failure(error as Error);
       }
+    }
+  }
+
+  /**
+   * Map the embedded failure to a new successful Try. Does nothing if the Try is a success.
+   * If the failureMapper throws, the result will be a failed Try.
+   *
+   * @param failureMapper A function that takes the Try's error and maps it to a new successful Try.
+   * @returns The original Try if it is a success, or a new Try with the original failure mapped to a success.
+   */
+  mapToSuccess(failureMapper: (error: Error) => TryResult): Try<TryResult> {
+    if (this.isSuccess()) {
+      return this;
+    } else {
+      return Try.of(() => failureMapper(this.error!));
     }
   }
 

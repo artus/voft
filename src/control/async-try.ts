@@ -209,6 +209,58 @@ export class AsyncTry<TryResult> {
   }
 
   /**
+   * Map the failure of the AsyncTry to a new failed AsyncTry. If the AsyncTry is a success, the new AsyncTry will be the same.
+   * If the failureMapper throws, the result will be a failed AsyncTry with the error of the failureMapper.
+   *
+   * @param failureMapper A function that takes the error and returns a new error.
+   * @returns A new failed AsyncTry with the mapped error, or the original AsyncTry if it is a success.
+   */
+  mapFailure(failureMapper: (error: Error) => Error): AsyncTry<TryResult> {
+    if (this.result) {
+      return this;
+    }
+
+    if (this.error) {
+      return AsyncTry.failure(failureMapper(this.error));
+    } else {
+      const containedValue = this.value!;
+      const transformedError = containedValue.then(
+        (value: TryResult) => value,
+        (error: Error) => {
+          throw failureMapper(error);
+        }
+      );
+      return new AsyncTry(transformedError);
+    }
+  }
+
+  /**
+   * Map the failure of the AsyncTry to a new successful AsyncTry. If the AsyncTry is a success, the new AsyncTry will be the same.
+   * If the failureMapper throws, the result will be a failed AsyncTry with the error of the failureMapper.
+   *
+   * @param failureMapper A function that takes the error and returns a new successful value.
+   * @returns A new successful AsyncTry with the mapped error, or the original AsyncTry if it is a success.
+   */
+  mapToSuccess(
+    failureMapper: (error: Error) => TryResult
+  ): AsyncTry<TryResult> {
+    if (this.result) {
+      return this;
+    }
+
+    if (this.error) {
+      return AsyncTry.of(async () => failureMapper(this.error!));
+    } else {
+      const containedValue = this.value!;
+      const transformedError = containedValue.then(
+        (value: TryResult) => value,
+        (error: Error) => failureMapper(error)
+      );
+      return new AsyncTry(transformedError);
+    }
+  }
+
+  /**
    * Create a new failed AsyncTry with an error.
    *
    * @param error The error to embed in the new AsyncTry.

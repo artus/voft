@@ -521,6 +521,120 @@ describe('AsyncTry', () => {
     });
   });
 
+  describe('mapFailure', () => {
+    it('Should return the original AsyncTry when it is a success.', async () => {
+      const result = AsyncTry.of(successfulAsyncExecutor).mapFailure(
+        (error) => new Error('New error: ' + error.message)
+      );
+
+      expect(await result.isSuccess()).toStrictEqual(true);
+      expect(await result.get()).toStrictEqual(1);
+    });
+
+    it('Should return a new AsyncTry with the mapped error when the original AsyncTry is a failure.', async () => {
+      const result = AsyncTry.of(throwingAsyncExecutor).mapFailure(
+        (error) => new Error('New error: ' + error.message)
+      );
+
+      const resolvedResult = await result.getCause();
+      const mappedFailureResult = result.mapFailure(
+        (error) => new Error('Again a new error: ' + error.message)
+      );
+
+      expect(await result.isFailure()).toStrictEqual(true);
+      expect(resolvedResult.message).toStrictEqual(
+        'New error: This is a test error.'
+      );
+      expect(await result.getCause()).toStrictEqual(
+        new Error('New error: This is a test error.')
+      );
+      expect(await mappedFailureResult.getCause()).toStrictEqual(
+        new Error('Again a new error: New error: This is a test error.')
+      );
+    });
+
+    it('Should not apply the failureMapper when the AsyncTry is a success.', async () => {
+      let executionCount = 0;
+      const result = AsyncTry.of(successfulAsyncExecutor).mapFailure(() => {
+        executionCount++;
+        return new Error('New error');
+      });
+
+      const resolvedResult = await result.get();
+      result.mapFailure(() => {
+        executionCount++;
+        return new Error('New error');
+      });
+
+      expect(await result.isSuccess()).toStrictEqual(true);
+      expect(resolvedResult).toStrictEqual(1);
+      expect(executionCount).toStrictEqual(0);
+    });
+
+    it('Should not throw if the failureMapper throws an error.', async () => {
+      const asyncTry = AsyncTry.of(throwingAsyncExecutor);
+
+      const result = asyncTry.mapFailure(() => {
+        throw testError;
+      });
+
+      expect(await result.isFailure()).toStrictEqual(true);
+      expect(await result.getCause()).toStrictEqual(testError);
+    });
+  });
+
+  describe('mapToSuccess', () => {
+    it('Should return the original AsyncTry when it is a success.', async () => {
+      const result = AsyncTry.of(successfulAsyncExecutor).mapToSuccess(() => 2);
+
+      expect(await result.isSuccess()).toStrictEqual(true);
+      expect(await result.get()).toStrictEqual(1);
+    });
+
+    it('Should return a new AsyncTry with the mapped error when the original AsyncTry is a failure.', async () => {
+      const result = AsyncTry.of(throwingAsyncExecutor).mapToSuccess(() => 2);
+      const otherResult = AsyncTry.of(throwingAsyncExecutor);
+
+      const otherResultCause = await otherResult.getCause();
+      const mappedFailureResult = otherResult.mapToSuccess(() => 3);
+
+      expect(await result.isSuccess()).toStrictEqual(true);
+      expect(await result.get()).toStrictEqual(2);
+      expect(await otherResult.isFailure()).toStrictEqual(true);
+      expect(otherResultCause).toStrictEqual(testError);
+      expect(await mappedFailureResult.get()).toStrictEqual(3);
+    });
+
+    it('Should not apply the failureMapper when the AsyncTry is a success.', async () => {
+      let executionCount = 0;
+      const result = AsyncTry.of(successfulAsyncExecutor).mapToSuccess(() => {
+        executionCount++;
+        return 2;
+      });
+
+      const resolvedResult = await result.get();
+      result.mapToSuccess(() => {
+        executionCount++;
+        return 2;
+      });
+
+      expect(await result.isSuccess()).toStrictEqual(true);
+      expect(resolvedResult).toStrictEqual(1);
+      expect(executionCount).toStrictEqual(0);
+    });
+
+    it('Should not throw if the failureMapper throws an error.', async () => {
+      const asyncTry = AsyncTry.of(throwingAsyncExecutor);
+
+      const result = asyncTry.mapToSuccess(() => {
+        throw testError;
+      });
+
+      expect(await result.isFailure()).toStrictEqual(true);
+      expect(await result.getCause()).toStrictEqual(testError);
+    });
+  });
+
   describe('failure', () => {
     it('Should return a failure AsyncTry with the provided error.', async () => {
       const result = AsyncTry.failure(testError);
