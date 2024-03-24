@@ -19,7 +19,7 @@
     "examples": "ts-node examples/index.ts",
     "prepare": "husky",
     "docs": "typedoc --out docs src/index.ts",
-    "precommit": "npm run lint && npm run test:coverage && npm run build && npm run docs"
+    "precommit": "npm run lint && npm run test:coverage && npm run build"
   },
   "prettier": {
     "printWidth": 80,
