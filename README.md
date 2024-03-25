@@ -1,4 +1,4 @@
-# voft
+# voft ∙ [![Docs](https://badgen.net/badge/docs/here/green)](https://artus.github.io/voft) [![License](https://badgen.net/badge/license/MIT/blue)](LICENSE) [![npm version](https://badge.fury.io/js/voft.svg)](https://www.npmjs.com/package/voft) [![CI status](https://github.com/artus/voft/actions/workflows/test-lint-build-deploy.yml/badge.svg)](https://github.com/artus/voft/actions)
 
 > Various Objects For Typescript
 
@@ -6,10 +6,10 @@
 
 Right now, the library includes the following classes:
 
- - `Try`: A class that allows you to chain synchronous functions and handle errors in a more declarative way.
- - `AsyncTry`: A class that allows you to chain asynchronous functions and handle errors in a more declarative way.
- - `Optional`: A class that allows you to convey the presence or absence of a value in a more declarative way.
- - `Either`: A class that allows you to convey a success or failure in a more declarative way.
+ - [`Try`](https://artus.github.io/voft/classes/Try.html): A class that allows you to chain synchronous functions and handle errors in a more declarative way.
+ - [`AsyncTry`](https://artus.github.io/voft/classes/AsyncTry.html): A class that allows you to chain asynchronous functions and handle errors in a more declarative way.
+ - [`Optional`](https://artus.github.io/voft/classes/Optional.html): A class that allows you to convey the presence or absence of a value in a more declarative way.
+ - [`Either`](https://artus.github.io/voft/classes/Either.html): A class that allows you to convey a success or failure in a more declarative way.
 
 You can find more information about each class in the [docs](https://artus.github.io/voft).
 
@@ -23,7 +23,7 @@ You can find examples of how to use the classes in the [examples](examples) dire
 npm install voft
 ```
 
-## Included objects
+## Usage
 
 ```typescript
 import { AsyncTry } from '../src';
